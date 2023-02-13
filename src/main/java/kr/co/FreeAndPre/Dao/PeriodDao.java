@@ -19,7 +19,7 @@ public class PeriodDao {
     }
 
     public GetPeriodRes getAbuseByIdx(int periodId) {
-        String getPeriodByIdQuery = "SELECT start_date, end_date FROM period WHERE abuse_idx = ?;";
+        String getPeriodByIdQuery = "SELECT start_date, end_date FROM Period WHERE period_id = ?;";
         int getPeriodByIdParams = periodId;
         return this.jdbcTemplate.queryForObject(getPeriodByIdQuery,
                 (rs, rowNum) -> new GetPeriodRes (

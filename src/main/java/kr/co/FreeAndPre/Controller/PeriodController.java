@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import kr.co.FreeAndPre.Model.GetPeriodRes;
 
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/period")
 public class PeriodController {
 
     private PeriodService periodService;
