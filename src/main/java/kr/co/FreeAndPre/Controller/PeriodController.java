@@ -1,6 +1,7 @@
 package kr.co.FreeAndPre.Controller;
 
-import kr.co.FreeAndPre.Provider.PeriodProvider;
+import kr.co.FreeAndPre.Dto.PeriodDto;
+import kr.co.FreeAndPre.Model.PostPeriodRes;
 import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.response.BaseException;
 import kr.co.FreeAndPre.response.BaseResponse;
@@ -13,11 +14,9 @@ import kr.co.FreeAndPre.Model.GetPeriodRes;
 public class PeriodController {
 
     private PeriodService periodService;
-    private PeriodProvider periodProvider;
 
-    public PeriodController(PeriodService periodService, PeriodProvider periodProvider) {
+    public PeriodController(PeriodService periodService) {
         this.periodService = periodService;
-        this.periodProvider = periodProvider;
     }
 
     /*
@@ -25,19 +24,15 @@ public class PeriodController {
      */
     @ResponseBody
     @GetMapping("/{periodId}")
-    public BaseResponse<GetPeriodRes> getPeriodInfoById (@PathVariable("periodId") int periodId) {
-        try{
-            GetPeriodRes getPeriodRes = periodProvider.getPeriodById(periodId);
-            return new BaseResponse<>(getPeriodRes);
-        } catch (BaseException exception){
-            System.out.println(exception);
-            return new BaseResponse<>((exception.getStatus()));
-        }
+    public BaseResponse<PeriodDto> getPeriodInfoById (@PathVariable("periodId") int periodId) {
+        PeriodDto periodDto = periodService.getPeriodById(periodId);
+        return new BaseResponse<>(periodDto);
     }
 
     /*
     2. 월경 정보 입력하기
      */
+
 
 
      /*
