@@ -1,13 +1,9 @@
 package kr.co.FreeAndPre.Controller;
 
 import kr.co.FreeAndPre.Dto.PeriodDto;
-import kr.co.FreeAndPre.Model.PostPeriodRes;
 import kr.co.FreeAndPre.Service.PeriodService;
-import kr.co.FreeAndPre.response.BaseException;
 import kr.co.FreeAndPre.response.BaseResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import kr.co.FreeAndPre.Model.GetPeriodRes;
 
 @RestController
 @RequestMapping("/period")

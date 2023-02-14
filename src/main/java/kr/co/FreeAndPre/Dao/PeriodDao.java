@@ -3,9 +3,6 @@ package kr.co.FreeAndPre.Dao;
 
 import kr.co.FreeAndPre.DBUtils;
 import kr.co.FreeAndPre.Dto.PeriodDto;
-import kr.co.FreeAndPre.Model.GetPeriodRes;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
