@@ -19,7 +19,10 @@ public class PeriodDao {
         return instance;
     }
 
-    public PeriodDto getAbuseByIdx(int periodId) {
+    /*
+    1. 월경 정보 가져오기
+     */
+    public PeriodDto getPeriodById(int periodId) {
         PeriodDto periodDto = null;
         PreparedStatement pstmt = null;
         Connection con = null;
@@ -37,14 +40,38 @@ public class PeriodDao {
                 periodDto = new PeriodDto();
                 periodDto.setPeriod_id(rs.getInt("period_id"));
                 periodDto.setEmail(rs.getString("email"));
-                periodDto.setStart_date(rs.getDate("start_date"));
-                periodDto.setEnd_date(rs.getDate("end_date"));
+                periodDto.setStart_date(rs.getString("start_date"));
+                periodDto.setEnd_date(rs.getString("end_date"));
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return periodDto;
+    }
+
+    /*
+    2. 월경 정보 입력하기
+     */
+    public int insertPeriod(PeriodDto periodDto) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String getPeriodByIdQuery = "insert into Period(email, start_date, end_date) VALUES (?, ?, ?);";
+            pstmt = con.prepareStatement(getPeriodByIdQuery);
+
+            pstmt.setString(1, periodDto.getEmail());
+            pstmt.setString(2, periodDto.getStart_date());
+            pstmt.setString(3, periodDto.getEnd_date());
+
+            int res = pstmt.executeUpdate();
+            return res;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

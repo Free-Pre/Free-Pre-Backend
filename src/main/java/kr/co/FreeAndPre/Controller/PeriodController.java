@@ -32,7 +32,15 @@ public class PeriodController {
     /*
     2. 월경 정보 입력하기
      */
-
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<String> insertPeriod(@RequestBody PeriodDto periodDto) {
+        int periodId = periodService.insertPeriod(periodDto);
+        if(periodId == 1)
+            return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
+        else
+            return new BaseResponse<>("월경 정보 입력에 실패하였습니다.");
+    }
 
 
      /*
