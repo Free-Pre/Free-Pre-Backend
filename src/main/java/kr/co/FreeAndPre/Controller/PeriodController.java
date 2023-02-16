@@ -31,8 +31,8 @@ public class PeriodController {
     @ResponseBody
     @PostMapping("")
     public BaseResponse<String> insertPeriod(@RequestBody PeriodDto periodDto) {
-        int periodId = periodService.insertPeriod(periodDto);
-        if(periodId == 1)
+        int periodSuccess = periodService.insertPeriod(periodDto);
+        if(periodSuccess == 1)
             return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
         else
             return new BaseResponse<>("월경 정보 입력에 실패하였습니다.");
