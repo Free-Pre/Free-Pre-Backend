@@ -1,9 +1,11 @@
 package kr.co.FreeAndPre.Controller;
 
 import kr.co.FreeAndPre.Dto.PeriodDto;
+import kr.co.FreeAndPre.Dto.UserDto;
 import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.Service.UserService;
 import kr.co.FreeAndPre.response.BaseResponse;
+import org.apache.tomcat.jni.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +24,27 @@ public class UserController {
      @GetMapping("/{userEmail}")
      public BaseResponse<Boolean> getUserExist (@PathVariable("userEmail") String userEmail) {
          Boolean exist = userService.getUserExist(userEmail);
-         return new BaseResponse<>(exist);
+         UserDto userDto = null;
+
+         if(exist == true)
+            return new BaseResponse<>(exist);
+         else {
+             insertPeriod(userDto);
+             return new BaseResponse<>(exist);
+         }
+
+     }
+
+     /*
+    2. 회원 가입하기
+     */
+     @ResponseBody
+     @PostMapping("")
+     public BaseResponse<String> insertPeriod(@RequestBody UserDto userDto) {
+         int userSuccess = userService.insertUser(userDto);
+         if(userSuccess == 1)
+             return new BaseResponse<>("회원가입에 성공하였습니다.");
+         else
+             return new BaseResponse<>("회원가입에 실패하였습니다.");
      }
 }

@@ -41,4 +41,35 @@ public class UserDao {
             throw new RuntimeException(e);
         }
     }
+
+    /*
+    2. 회원 가입하기
+     */
+    public int insertUser(UserDto userDto) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String getPeriodByIdQuery = "insert into User(email, nickname, first_period, average_cycle, last_cycle, term, notice, pregnancy) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            pstmt = con.prepareStatement(getPeriodByIdQuery);
+
+            pstmt.setString(1, userDto.getEmail());
+            pstmt.setString(2, userDto.getNickname());
+            pstmt.setBoolean(3, userDto.getFirst_period());
+            pstmt.setInt(4, userDto.getAverage_cycle());
+            pstmt.setInt(5, userDto.getLast_cycle());
+            pstmt.setInt(6, userDto.getTerm());
+            pstmt.setBoolean(7, userDto.getNotice());
+            pstmt.setBoolean(8, userDto.getPregnancy());
+
+
+            int res = pstmt.executeUpdate();
+            return res;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
