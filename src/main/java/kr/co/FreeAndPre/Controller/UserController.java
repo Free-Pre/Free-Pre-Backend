@@ -29,7 +29,6 @@ public class UserController {
          if(exist == true)
             return new BaseResponse<>(exist);
          else {
-             insertPeriod(userDto);
              return new BaseResponse<>(exist);
          }
 
