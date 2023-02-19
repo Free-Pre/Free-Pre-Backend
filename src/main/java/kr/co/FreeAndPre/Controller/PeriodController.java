@@ -6,7 +6,7 @@ import kr.co.FreeAndPre.response.BaseResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/period")
+@RequestMapping("/freepre/period")
 public class PeriodController {
 
     private PeriodService periodService;

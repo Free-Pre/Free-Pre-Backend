@@ -9,7 +9,7 @@ import org.apache.tomcat.jni.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/freepre/user")
 public class UserController {
     private UserService userService;
 
