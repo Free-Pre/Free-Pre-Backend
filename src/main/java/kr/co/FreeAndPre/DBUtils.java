@@ -13,7 +13,7 @@ public class DBUtils {
 
         String user = "root"; // 데이터 베이스 사용자의 접속 아이디 입력
 
-        String password = "root"; // 데이터 베이스 사용자의 접속 비밀번호 입력
+        String password = "root!"; // 데이터 베이스 사용자의 접속 비밀번호 입력
 
         try {
             Class.forName(driver);
