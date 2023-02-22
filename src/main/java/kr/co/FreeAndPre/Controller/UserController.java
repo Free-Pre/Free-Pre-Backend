@@ -40,7 +40,13 @@ public class UserController {
      @ResponseBody
      @PostMapping("")
      public BaseResponse<String> insertPeriod(@RequestBody UserDto userDto) {
+
+         if(userDto.getEmail() == null || userDto.getNickname() == null || userDto.getFirst_period() == null ||
+                 userDto.getNotice() == null || userDto.getPregnancy() == null)
+             return new BaseResponse<>("입력값을 확인해주세요.");
+
          int userSuccess = userService.insertUser(userDto);
+
          if(userSuccess == 1)
              return new BaseResponse<>("회원가입에 성공하였습니다.");
          else
