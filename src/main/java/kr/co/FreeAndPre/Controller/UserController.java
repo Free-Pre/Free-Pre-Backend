@@ -92,16 +92,11 @@ public class UserController {
         int userSuccess = 0;
 
         //pre -> free
-        if (userDto.getFirst_period() == true) {
-            if (userDto.getTerm() == 0) {
-                return new BaseResponse<>("월경일을 입력하세요.");
-            }
+        if (userDto.getFirst_period() == true)
             userSuccess = userService.pretofree(userEmail, userDto);
-        }
         //free -> pre
-        else {
+        else
             userSuccess = userService.freetopre(userEmail, userDto);
-        }
 
         if (userSuccess == 1)
             return new BaseResponse<>("버전 변경에 성공하였습니다.");

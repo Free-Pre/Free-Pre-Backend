@@ -126,14 +126,13 @@ public class UserDao {
 
         try {
             con = DBUtils.getConnection();
-            String modifyUserQuery = "UPDATE User SET first_period = ?, average_cycle = ?, last_cycle = ?, term = ? WHERE email = ?;";
+            String modifyUserQuery = "UPDATE User SET first_period = ?, average_cycle = ?, last_cycle = ? WHERE email = ?;";
             pstmt = con.prepareStatement(modifyUserQuery);
 
             pstmt.setBoolean(1, userDto.getFirst_period());
             pstmt.setInt(2, 28);
             pstmt.setInt(3, 28);
-            pstmt.setInt(4, userDto.getTerm());
-            pstmt.setString(5, userEmail);
+            pstmt.setString(4, userEmail);
 
             int res = pstmt.executeUpdate();
             return res;
