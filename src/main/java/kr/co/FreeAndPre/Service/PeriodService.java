@@ -4,10 +4,12 @@ import kr.co.FreeAndPre.Dao.PeriodDao;
 import kr.co.FreeAndPre.Dto.PeriodDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PeriodService {
-    public PeriodDto getPeriodById (int periodId) {
-        PeriodDto periodDto = PeriodDao.getInstance().getPeriodById(periodId);
+    public List<PeriodDto> getPeriodInfoByEmail (String userEmail) {
+        List<PeriodDto> periodDto = PeriodDao.getInstance().getPeriodInfoByEmail(userEmail);
         return periodDto;
     }
 

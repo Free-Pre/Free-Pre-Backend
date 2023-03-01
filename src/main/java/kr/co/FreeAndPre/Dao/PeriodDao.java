@@ -7,7 +7,10 @@ import kr.co.FreeAndPre.Dto.PeriodDto;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class PeriodDao {
     private static PeriodDao instance = new PeriodDao();
@@ -19,32 +22,36 @@ public class PeriodDao {
     /*
     1. 월경 정보 가져오기
      */
-    public PeriodDto getPeriodById(int periodId) {
+    public List<PeriodDto> getPeriodInfoByEmail(String userEmail) {
         PeriodDto periodDto = null;
         PreparedStatement pstmt = null;
         Connection con = null;
         ResultSet rs = null;
+        List<PeriodDto> result = new ArrayList<>();
 
         try {
             con = DBUtils.getConnection();
-            String getPeriodByIdQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE period_id = ?;";
-            int getPeriodByIdParams = periodId;
-            pstmt = con.prepareStatement(getPeriodByIdQuery);
-            pstmt.setInt(1, periodId);
+
+            //최근 4개월의 월경 정보 가져오기
+            String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE email = ? " +
+                    "ORDER BY start_date DESC LIMIT 4;";
+            pstmt = con.prepareStatement(getPeriodByEmailQuery);
+            pstmt.setString(1, userEmail);
             rs = pstmt.executeQuery();
 
-            if(rs.next()) {
+            while(rs.next()) {
                 periodDto = new PeriodDto();
                 periodDto.setPeriod_id(rs.getInt("period_id"));
                 periodDto.setEmail(rs.getString("email"));
                 periodDto.setStart_date(rs.getString("start_date"));
                 periodDto.setEnd_date(rs.getString("end_date"));
+                result.add(periodDto);
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return periodDto;
+        return result;
     }
 
     /*
@@ -80,6 +87,7 @@ public class PeriodDao {
             res += pstmt.executeUpdate();
 
             return res;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {
@@ -151,6 +159,7 @@ public class PeriodDao {
             res += pstmt.executeUpdate();
 
             return res;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {

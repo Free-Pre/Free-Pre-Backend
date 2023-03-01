@@ -5,6 +5,8 @@ import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.response.BaseResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/freepre/period")
 public class PeriodController {
@@ -19,9 +21,9 @@ public class PeriodController {
     1. 월경 정보 가져오기
      */
     @ResponseBody
-    @GetMapping("/{periodId}")
-    public BaseResponse<PeriodDto> getPeriodInfoById (@PathVariable("periodId") int periodId) {
-        PeriodDto periodDto = periodService.getPeriodById(periodId);
+    @GetMapping("/{userEmail}")
+    public BaseResponse<List<PeriodDto>> getPeriodInfoByEmail (@PathVariable("userEmail") String userEmail) {
+        List<PeriodDto> periodDto = periodService.getPeriodInfoByEmail(userEmail);
         return new BaseResponse<>(periodDto);
     }
 
