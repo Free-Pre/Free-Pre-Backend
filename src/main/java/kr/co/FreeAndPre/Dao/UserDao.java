@@ -170,6 +170,28 @@ public class UserDao {
     }
 
     /*
+    5. 회원 탈퇴하기
+     */
+    public int deleteUser(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String deleteUserQuery = "DELETE FROM User WHERE email = ?;";
+
+            pstmt = con.prepareStatement(deleteUserQuery);
+            pstmt.setString(1, userEmail);
+
+            int res = pstmt.executeUpdate();
+            return res;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
     Validation
      */
 

@@ -18,74 +18,73 @@ public class UserController {
         this.userService = userService;
     }
 
-     /*
-    1. 회원 존재 여부 확인하기
-     */
-     @ResponseBody
-     @GetMapping("/{userEmail}")
-     public BaseResponse<Boolean> getUserExist (@PathVariable("userEmail") String userEmail) {
-         Boolean exist = userService.getUserExist(userEmail);
-         UserDto userDto = null;
+    /*
+   1. 회원 존재 여부 확인하기
+    */
+    @ResponseBody
+    @GetMapping("/{userEmail}")
+    public BaseResponse<Boolean> getUserExist(@PathVariable("userEmail") String userEmail) {
+        Boolean exist = userService.getUserExist(userEmail);
+        UserDto userDto = null;
 
-         if(exist == true)
+        if (exist == true)
             return new BaseResponse<>(exist);
-         else {
-             return new BaseResponse<>(exist);
-         }
+        else {
+            return new BaseResponse<>(exist);
+        }
 
-     }
+    }
 
-     /*
-    2. 회원 가입하기
-     */
-     @ResponseBody
-     @PostMapping("")
-     public BaseResponse<String> insertPeriod(@RequestBody UserDto userDto) {
+    /*
+   2. 회원 가입하기
+    */
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<String> insertPeriod(@RequestBody UserDto userDto) {
 
-         int userSuccess = 0;
+        int userSuccess = 0;
 
-         if(userDto.getEmail() == null || userDto.getNickname() == null || userDto.getFirst_period() == null)
-             return new BaseResponse<>("입력값을 확인해주세요.");
+        if (userDto.getEmail() == null || userDto.getNickname() == null || userDto.getFirst_period() == null)
+            return new BaseResponse<>("입력값을 확인해주세요.");
 
-         if(userDto.getFirst_period() == true) {
-             //free 버전
-             userSuccess = userService.insertFreeUser(userDto);
-         }
-         else {
-             //pre 버전
-             userSuccess = userService.insertPreUser(userDto);
-         }
+        if (userDto.getFirst_period() == true) {
+            //free 버전
+            userSuccess = userService.insertFreeUser(userDto);
+        } else {
+            //pre 버전
+            userSuccess = userService.insertPreUser(userDto);
+        }
 
-         if(userSuccess == 1)
-             return new BaseResponse<>("회원가입에 성공하였습니다.");
-         else
-             return new BaseResponse<>("회원가입에 실패하였습니다.");
-     }
+        if (userSuccess == 1)
+            return new BaseResponse<>("회원가입에 성공하였습니다.");
+        else
+            return new BaseResponse<>("회원가입에 실패하였습니다.");
+    }
 
-     /*
-    3. 회원 닉네임 변경
-     */
+    /*
+   3. 회원 닉네임 변경
+    */
     @ResponseBody
     @PatchMapping("/nickname/{userEmail}")
-    public BaseResponse<String> modifyUserNickname(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto){
+    public BaseResponse<String> modifyUserNickname(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto) {
         if (userDto.getNickname() == null) {
             return new BaseResponse<>("닉네임을 입력하세요.");
         }
 
         int userSuccess = userService.modifyUserNickname(userEmail, userDto);
 
-        if(userSuccess == 1)
+        if (userSuccess == 1)
             return new BaseResponse<>("닉네임 수정에 성공하였습니다.");
         else
             return new BaseResponse<>("닉네임 수정에 실패하였습니다.");
     }
 
     /*
-    3. 버전 변경
+    4. 버전 변경
      */
     @ResponseBody
     @PatchMapping("/version/{userEmail}")
-    public BaseResponse<String> modifyUserVersion(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto){
+    public BaseResponse<String> modifyUserVersion(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto) {
         if (userDto.getFirst_period() == null) {
             return new BaseResponse<>("초경여부를 입력하세요.");
         }
@@ -93,7 +92,7 @@ public class UserController {
         int userSuccess = 0;
 
         //pre -> free
-        if(userDto.getFirst_period() == true) {
+        if (userDto.getFirst_period() == true) {
             if (userDto.getTerm() == 0) {
                 return new BaseResponse<>("월경일을 입력하세요.");
             }
@@ -104,9 +103,24 @@ public class UserController {
             userSuccess = userService.freetopre(userEmail, userDto);
         }
 
-        if(userSuccess == 1)
+        if (userSuccess == 1)
             return new BaseResponse<>("버전 변경에 성공하였습니다.");
         else
             return new BaseResponse<>("버전 변경에 실패하였습니다.");
+    }
+
+    /*
+    5. 회원 탈퇴
+     */
+    @ResponseBody
+    @DeleteMapping("/delete/{userEmail}")
+    public BaseResponse<String> deleteUser(@PathVariable("userEmail") String userEmail) {
+
+        int userSuccess = userService.deleteUser(userEmail);
+
+        if (userSuccess == 1)
+            return new BaseResponse<>("회원 탈퇴에 성공하였습니다.");
+        else
+            return new BaseResponse<>("회원 탈퇴에 실패하였습니다.");
     }
 }

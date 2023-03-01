@@ -39,6 +39,11 @@ public class UserService {
         return userSuccess;
     }
 
+    public int deleteUser(String userEmail) {
+        int userSuccess = UserDao.getInstance().deleteUser(userEmail);
+        return userSuccess;
+    }
+
     /*
     Validation
      */
