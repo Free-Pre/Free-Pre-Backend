@@ -11,6 +11,11 @@ public class PeriodService {
         return periodDto;
     }
 
+    public int insertFirstPeriod(PeriodDto periodDto) {
+        int periodId = PeriodDao.getInstance().insertFirstPeriod(periodDto);
+        return periodId;
+    }
+
     public int insertPeriod(PeriodDto periodDto) {
         int periodId = PeriodDao.getInstance().insertPeriod(periodDto);
         return periodId;

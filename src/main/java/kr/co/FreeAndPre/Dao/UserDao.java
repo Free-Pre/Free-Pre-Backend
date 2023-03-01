@@ -51,8 +51,8 @@ public class UserDao {
 
         try {
             con = DBUtils.getConnection();
-            String makeFreeUserByIdQuery = "insert into User(email, nickname, first_period, average_cycle, last_cycle, term) " +
-                    "VALUES (?, ?, ?, ?, ?, ?);";
+            String makeFreeUserByIdQuery = "insert into User(email, nickname, first_period, average_cycle, last_cycle) " +
+                    "VALUES (?, ?, ?, ?, ?);";
             pstmt = con.prepareStatement(makeFreeUserByIdQuery);
 
             pstmt.setString(1, userDto.getEmail());
@@ -60,9 +60,6 @@ public class UserDao {
             pstmt.setBoolean(3, userDto.getFirst_period());
             pstmt.setInt(4, 28);
             pstmt.setInt(5, 28);
-            pstmt.setInt(6, userDto.getTerm());
-//            pstmt.setBoolean(7, true);  //알람
-//            pstmt.setBoolean(8, false);  //임신여부
 
             int res = pstmt.executeUpdate();
             return res;

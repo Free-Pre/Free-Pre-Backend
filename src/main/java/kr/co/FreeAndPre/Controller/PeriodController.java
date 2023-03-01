@@ -26,16 +26,29 @@ public class PeriodController {
     }
 
     /*
-    2. 월경 정보 입력하기
+    2. 회원가입 직후 첫 월경일 정보 입력
+     */
+    @ResponseBody
+    @PostMapping("/first")
+    public BaseResponse<String> insertFirstPeriod(@RequestBody PeriodDto periodDto) {
+        int periodSuccess = periodService.insertFirstPeriod(periodDto);
+        if(periodSuccess == 0)
+            return new BaseResponse<>("첫 월경 정보 입력에 실패하였습니다.");
+        else
+            return new BaseResponse<>("첫 월경 정보 입력에 성공하였습니다.");
+    }
+
+    /*
+    2-1. 월경 정보 입력하기
      */
     @ResponseBody
     @PostMapping("")
     public BaseResponse<String> insertPeriod(@RequestBody PeriodDto periodDto) {
         int periodSuccess = periodService.insertPeriod(periodDto);
-        if(periodSuccess == 1)
-            return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
-        else
+        if(periodSuccess == 0)
             return new BaseResponse<>("월경 정보 입력에 실패하였습니다.");
+        else
+            return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
     }
 
 
