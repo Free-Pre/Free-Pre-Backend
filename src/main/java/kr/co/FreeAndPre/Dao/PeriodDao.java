@@ -106,56 +106,68 @@ public class PeriodDao {
         try {
             con = DBUtils.getConnection();
 
-            /* User 테이블의 마지막 월경 주기(last_cycle) 업데이트 */
-            stmt = con.createStatement();
-            //최근 월경일의 마지막 날
-            ResultSet rs = stmt.executeQuery("SELECT end_date FROM period ORDER BY end_date DESC LIMIT 1;");
-            String last_end_date = "0";
-            while(rs.next()) {
-                last_end_date = rs.getString(1);
-            }
-
-            String updateLastCycleQuery = "UPDATE User SET last_cycle = ?  WHERE email = ?;";
-            pstmt = con.prepareStatement(updateLastCycleQuery);
-
-            //최근 월경일의 마지막 날
-            Date old_end_date = new SimpleDateFormat("yyyy-MM-dd").parse(last_end_date);
-            //새로 입력한 월경일의 첫째 날
-            Date new_start_date = new SimpleDateFormat("yyyy.MM.dd").parse(periodDto.getStart_date());
-            //최근 월경 주기
-            long update_end_date = ((new_start_date.getTime() - old_end_date.getTime()) / 1000) / (24*60*60);
-
-            pstmt.setString(1, Long.toString(update_end_date));
-            pstmt.setString(2, periodDto.getEmail());
-            int res = pstmt.executeUpdate();
-
-            /* User 테이블의 마지막 월경 주기(last_cycle) 업데이트 */
-            String updateAverageCycleQuery = "UPDATE User SET average_cycle = ((average_cycle + ?) / 2) WHERE email = ?;";
-            pstmt = con.prepareStatement(updateAverageCycleQuery);
-
-            pstmt.setString(1, Long.toString(update_end_date));
-            pstmt.setString(2, periodDto.getEmail());
-            res += pstmt.executeUpdate();
-
-            /*시작 날짜와 끝나는 날짜로 기간(term) 구하기*/
-            String updateTermQuery = "UPDATE User SET term = ? WHERE email = ?;";
-            pstmt = con.prepareStatement(updateTermQuery);
-
-            Date start_date = new SimpleDateFormat("yyyy.MM.dd").parse(periodDto.getStart_date());
-            Date end_date = new SimpleDateFormat("yyyy.MM.dd").parse(periodDto.getEnd_date());
-            long term = ((end_date.getTime() - start_date.getTime()) / 1000) / (24*60*60);
-
-            pstmt.setString(1, Long.toString(term));
-            pstmt.setString(2, periodDto.getEmail());
-            res += pstmt.executeUpdate();
-
-            /*period 테이블에 값 넣기*/
+            /* period 테이블에 월경 정보 넣기 */
             String insertPeriodQuery = "insert into Period(email, start_date, end_date) VALUES (?, ?, ?);";
             pstmt = con.prepareStatement(insertPeriodQuery);
 
             pstmt.setString(1, periodDto.getEmail());
             pstmt.setString(2, periodDto.getStart_date());
             pstmt.setString(3, periodDto.getEnd_date());
+            int res = pstmt.executeUpdate();
+
+            /* User 테이블의 주기(last_cycle), 기간(term) 업데이트 */
+            stmt = con.createStatement();
+
+            //최근 4개월 월경 시작일 가져오기
+            ResultSet rs = stmt.executeQuery("SELECT start_date FROM period ORDER BY end_date DESC LIMIT 4;");
+            List<String> start_date = new ArrayList<>();
+            while(rs.next()) {
+                start_date.add(rs.getString(1));
+            }
+
+            //최근 4개월 월경 마지막일 가져오기
+            rs = stmt.executeQuery("SELECT end_date FROM period ORDER BY end_date DESC LIMIT 4;");
+            List<String> end_date = new ArrayList<>();
+            while(rs.next()) {
+                end_date.add(rs.getString(1));
+            }
+
+            //user 테이블의 cycle 업데이트 쿼리문
+            String updateLastCycleQuery = "UPDATE User SET cycle = ?  WHERE email = ?;";
+            pstmt = con.prepareStatement(updateLastCycleQuery);
+
+            List<Long> cycle_gap = new ArrayList<>();  //각 달의 월경 주기
+            for(int i = 0; i < start_date.size() - 1; i++) {  //(새로 입력한 월경 시작일 - 저번 달의 월경 시작일)
+                cycle_gap.add(i, (new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime() -
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i + 1)).getTime()) / 1000 / (24*60*60));
+            }
+            long cycle = 0, cycle_sum = 0;
+            for(int i = 0; i < cycle_gap.size(); i++) {
+                cycle_sum += cycle_gap.get(i);
+                cycle = cycle_sum / cycle_gap.size();
+            }
+
+            pstmt.setInt(1, Long.valueOf(cycle ).intValue() );
+            pstmt.setString(2, periodDto.getEmail());
+            res = pstmt.executeUpdate();
+
+            //user 테이블의 term 업데이트 쿼리문
+            String updateTermQuery = "UPDATE User SET term = ? WHERE email = ?;";
+            pstmt = con.prepareStatement(updateTermQuery);
+
+            List<Long> term_gap = new ArrayList<>();  //각 달의 월경 기간
+            for(int i = 0; i < start_date.size(); i++) {  //(새로 입력한 월경 마지막일 - 새로 입력한 월경 시작일)
+                term_gap.add(i, (new SimpleDateFormat("yyyy-MM-dd").parse(end_date.get(i)).getTime() -
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime()) / 1000 / (24*60*60));
+            }
+            long term = 0, term_sum = 0;
+            for(int i = 0; i < term_gap.size(); i++) {
+                term_sum += term_gap.get(i);
+                term =  term_sum / term_gap.size();
+            }
+
+            pstmt.setInt(1, Long.valueOf(term).intValue());
+            pstmt.setString(2, periodDto.getEmail());
             res += pstmt.executeUpdate();
 
             return res;
@@ -163,6 +175,34 @@ public class PeriodDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+    3. 월경 정보 수정하기
+     */
+    public int modifyPeriod(int periodId, PeriodDto periodDto) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String modifyPeriodQuery = "UPDATE Period SET start_date = ?, end_date = ? WHERE period_id = ?;";
+            pstmt = con.prepareStatement(modifyPeriodQuery);
+
+            pstmt.setString(1, periodDto.getStart_date());
+            pstmt.setString(2, periodDto.getEnd_date());
+            pstmt.setInt(3, periodId);
+
+            //+ user 테이블의 기간, 주기 업데이트
+
+            int res = pstmt.executeUpdate();
+            return res;
+
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

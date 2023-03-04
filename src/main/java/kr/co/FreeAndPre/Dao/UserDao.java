@@ -51,15 +51,14 @@ public class UserDao {
 
         try {
             con = DBUtils.getConnection();
-            String makeFreeUserByIdQuery = "insert into User(email, nickname, first_period, average_cycle, last_cycle) " +
-                    "VALUES (?, ?, ?, ?, ?);";
+            String makeFreeUserByIdQuery = "insert into User(email, nickname, first_period, cycle) " +
+                    "VALUES (?, ?, ?, ?);";
             pstmt = con.prepareStatement(makeFreeUserByIdQuery);
 
             pstmt.setString(1, userDto.getEmail());
             pstmt.setString(2, userDto.getNickname());
             pstmt.setBoolean(3, userDto.getFirst_period());
             pstmt.setInt(4, 28);
-            pstmt.setInt(5, 28);
 
             int res = pstmt.executeUpdate();
             return res;
@@ -126,13 +125,12 @@ public class UserDao {
 
         try {
             con = DBUtils.getConnection();
-            String modifyUserQuery = "UPDATE User SET first_period = ?, average_cycle = ?, last_cycle = ? WHERE email = ?;";
+            String modifyUserQuery = "UPDATE User SET first_period = ?, cycle = ? WHERE email = ?;";
             pstmt = con.prepareStatement(modifyUserQuery);
 
             pstmt.setBoolean(1, userDto.getFirst_period());
             pstmt.setInt(2, 28);
-            pstmt.setInt(3, 28);
-            pstmt.setString(4, userEmail);
+            pstmt.setString(3, userEmail);
 
             int res = pstmt.executeUpdate();
             return res;

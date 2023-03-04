@@ -57,4 +57,13 @@ public class PeriodController {
      /*
     3. 월경 정보 수정하기
      */
+     @ResponseBody
+     @PatchMapping("/edit/{periodId}")
+     public BaseResponse<String> modifyPeriod(@PathVariable("periodId") int periodId, @RequestBody PeriodDto periodDto) {
+         int periodSuccess = periodService.modifyPeriod(periodId, periodDto);
+         if(periodSuccess == 0)
+             return new BaseResponse<>("월경 정보 입력에 실패하였습니다.");
+         else
+             return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
+     }
 }

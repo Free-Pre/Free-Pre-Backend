@@ -14,12 +14,17 @@ public class PeriodService {
     }
 
     public int insertFirstPeriod(PeriodDto periodDto) {
-        int periodId = PeriodDao.getInstance().insertFirstPeriod(periodDto);
-        return periodId;
+        int result = PeriodDao.getInstance().insertFirstPeriod(periodDto);
+        return result;
     }
 
     public int insertPeriod(PeriodDto periodDto) {
-        int periodId = PeriodDao.getInstance().insertPeriod(periodDto);
-        return periodId;
+        int result = PeriodDao.getInstance().insertPeriod(periodDto);
+        return result;
+    }
+
+    public int modifyPeriod(int periodId, PeriodDto periodDto) {
+        int result = PeriodDao.getInstance().modifyPeriod(periodId, periodDto);
+        return result;
     }
 }
