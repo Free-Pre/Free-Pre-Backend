@@ -45,7 +45,7 @@ public class UserDao {
     /*
     2. Free 회원 가입하기
      */
-    public int insertFreeUser(UserDto userDto) {
+    public void insertFreeUser(UserDto userDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
 
@@ -60,8 +60,7 @@ public class UserDao {
             pstmt.setBoolean(3, userDto.getFirst_period());
             pstmt.setInt(4, 28);
 
-            int res = pstmt.executeUpdate();
-            return res;
+            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -71,7 +70,7 @@ public class UserDao {
     /*
     2-1. Pre 회원 가입하기
      */
-    public int insertPreUser(UserDto userDto) {
+    public void insertPreUser(UserDto userDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
 
@@ -85,8 +84,7 @@ public class UserDao {
             pstmt.setString(2, userDto.getNickname());
             pstmt.setBoolean(3, userDto.getFirst_period());
 
-            int res = pstmt.executeUpdate();
-            return res;
+            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -96,7 +94,7 @@ public class UserDao {
     /*
     3. 회원 닉네임 수정하기
      */
-    public int modifyUserNickname(String userEmail, UserDto userDto) {
+    public void modifyUserNickname(String userEmail, UserDto userDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
 
@@ -108,8 +106,7 @@ public class UserDao {
             pstmt.setString(1, userDto.getNickname());
             pstmt.setString(2, userEmail);
 
-            int res = pstmt.executeUpdate();
-            return res;
+            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -119,7 +116,7 @@ public class UserDao {
     /*
     4. Pre->Free 버전 수정하기
      */
-    public int pretofree(String userEmail, UserDto userDto) {
+    public void pretofree(String userEmail, UserDto userDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
 
@@ -132,8 +129,7 @@ public class UserDao {
             pstmt.setInt(2, 28);
             pstmt.setString(3, userEmail);
 
-            int res = pstmt.executeUpdate();
-            return res;
+            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -143,7 +139,7 @@ public class UserDao {
     /*
     4-1. Free->Pre 버전 수정하기
      */
-    public int freetopre(String userEmail, UserDto userDto) {
+    public void freetopre(String userEmail, UserDto userDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
 
@@ -155,8 +151,7 @@ public class UserDao {
             pstmt.setBoolean(1, userDto.getFirst_period());
             pstmt.setString(2, userEmail);
 
-            int res = pstmt.executeUpdate();
-            return res;
+            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -166,7 +161,7 @@ public class UserDao {
     /*
     5. 회원 탈퇴하기
      */
-    public int deleteUser(String userEmail) {
+    public void deleteUser(String userEmail) {
         PreparedStatement pstmt = null;
         Connection con = null;
 
@@ -177,16 +172,10 @@ public class UserDao {
             pstmt = con.prepareStatement(deleteUserQuery);
             pstmt.setString(1, userEmail);
 
-            int res = pstmt.executeUpdate();
-            return res;
+            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
-    /*
-    Validation
-     */
-
 }

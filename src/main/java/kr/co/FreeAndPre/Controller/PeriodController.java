@@ -2,10 +2,14 @@ package kr.co.FreeAndPre.Controller;
 
 import kr.co.FreeAndPre.Dto.PeriodDto;
 import kr.co.FreeAndPre.Service.PeriodService;
+import kr.co.FreeAndPre.Service.UserService;
 import kr.co.FreeAndPre.response.BaseResponse;
+import kr.co.FreeAndPre.response.BaseResponseStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static kr.co.FreeAndPre.response.BaseResponseStatus.REQUEST_ERROR;
 
 @RestController
 @RequestMapping("/freepre/period")
@@ -23,7 +27,17 @@ public class PeriodController {
     @ResponseBody
     @GetMapping("/{userEmail}")
     public BaseResponse<List<PeriodDto>> getPeriodInfoByEmail (@PathVariable("userEmail") String userEmail) {
+
+        if(!periodService.getUserExist(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
         List<PeriodDto> periodDto = periodService.getPeriodInfoByEmail(userEmail);
+
+        if(periodDto.size() <= 0){
+            return new BaseResponse<>(BaseResponseStatus.NO_PERIOD);
+        }
+
         return new BaseResponse<>(periodDto);
     }
 
@@ -32,12 +46,18 @@ public class PeriodController {
      */
     @ResponseBody
     @PostMapping("/first")
-    public BaseResponse<String> insertFirstPeriod(@RequestBody PeriodDto periodDto) {
-        int periodSuccess = periodService.insertFirstPeriod(periodDto);
-        if(periodSuccess == 0)
-            return new BaseResponse<>("첫 월경 정보 입력에 실패하였습니다.");
-        else
-            return new BaseResponse<>("첫 월경 정보 입력에 성공하였습니다.");
+    public BaseResponse<PeriodDto> insertFirstPeriod(@RequestBody PeriodDto periodDto) {
+
+        if (periodDto.getEmail() == null || periodDto.getStart_date() == null || periodDto.getEnd_date() == null)
+            return new BaseResponse<>(REQUEST_ERROR);
+
+        if(!periodService.getUserExist(periodDto.getEmail())){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
+        periodService.insertFirstPeriod(periodDto);
+
+        return new BaseResponse<>(periodDto);
     }
 
     /*
@@ -45,12 +65,18 @@ public class PeriodController {
      */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<String> insertPeriod(@RequestBody PeriodDto periodDto) {
-        int periodSuccess = periodService.insertPeriod(periodDto);
-        if(periodSuccess == 0)
-            return new BaseResponse<>("월경 정보 입력에 실패하였습니다.");
-        else
-            return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
+    public BaseResponse<PeriodDto> insertPeriod(@RequestBody PeriodDto periodDto) {
+
+        if (periodDto.getEmail() == null || periodDto.getStart_date() == null || periodDto.getEnd_date() == null)
+            return new BaseResponse<>(REQUEST_ERROR);
+
+        if(!periodService.getUserExist(periodDto.getEmail())){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
+        periodService.insertPeriod(periodDto);
+
+        return new BaseResponse<>(periodDto);
     }
 
 
@@ -60,10 +86,9 @@ public class PeriodController {
      @ResponseBody
      @PatchMapping("/edit/{periodId}")
      public BaseResponse<String> modifyPeriod(@PathVariable("periodId") int periodId, @RequestBody PeriodDto periodDto) {
-         int periodSuccess = periodService.modifyPeriod(periodId, periodDto);
-         if(periodSuccess == 0)
-             return new BaseResponse<>("월경 정보 입력에 실패하였습니다.");
-         else
-             return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
+
+         periodService.modifyPeriod(periodId, periodDto);
+
+         return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
      }
 }

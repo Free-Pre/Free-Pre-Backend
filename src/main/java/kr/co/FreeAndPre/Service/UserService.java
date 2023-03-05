@@ -5,47 +5,35 @@ import kr.co.FreeAndPre.Dto.UserDto;
 import kr.co.FreeAndPre.response.BaseException;
 import org.springframework.stereotype.Service;
 
-import static kr.co.FreeAndPre.response.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
 public class UserService {
     public Boolean getUserExist(String userEmail) {
-        Boolean exist = UserDao.getInstance().getUserExist(userEmail);
-        return exist;
+        return UserDao.getInstance().getUserExist(userEmail);
     }
 
-    public int insertFreeUser(UserDto userDto) {
-        int userSuccess = UserDao.getInstance().insertFreeUser(userDto);
-        return userSuccess;
+    public void insertFreeUser(UserDto userDto) {
+        UserDao.getInstance().insertFreeUser(userDto);
     }
 
-    public int insertPreUser(UserDto userDto) {
-        int userSuccess = UserDao.getInstance().insertPreUser(userDto);
-        return userSuccess;
+    public void insertPreUser(UserDto userDto) {
+        UserDao.getInstance().insertPreUser(userDto);
     }
 
-    public int modifyUserNickname(String userEmail, UserDto userDto) {
-        int userSuccess = UserDao.getInstance().modifyUserNickname(userEmail, userDto);
-        return userSuccess;
+    public void modifyUserNickname(String userEmail, UserDto userDto) {
+        UserDao.getInstance().modifyUserNickname(userEmail, userDto);
     }
 
-    public int pretofree(String userEmail, UserDto userDto) {
-        int userSuccess = UserDao.getInstance().pretofree(userEmail, userDto);
-        return userSuccess;
+    public void pretofree(String userEmail, UserDto userDto) {
+        UserDao.getInstance().pretofree(userEmail, userDto);
     }
 
-    public int freetopre(String userEmail, UserDto userDto) {
-        int userSuccess = UserDao.getInstance().freetopre(userEmail, userDto);
-        return userSuccess;
+    public void freetopre(String userEmail, UserDto userDto) {
+        UserDao.getInstance().freetopre(userEmail, userDto);
     }
 
-    public int deleteUser(String userEmail) {
-        int userSuccess = UserDao.getInstance().deleteUser(userEmail);
-        return userSuccess;
+    public void deleteUser(String userEmail) {
+        UserDao.getInstance().deleteUser(userEmail);
     }
-
-    /*
-    Validation
-     */
 
 }

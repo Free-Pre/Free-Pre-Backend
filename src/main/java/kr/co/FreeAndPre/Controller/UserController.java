@@ -6,8 +6,11 @@ import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.Service.UserService;
 import kr.co.FreeAndPre.response.BaseException;
 import kr.co.FreeAndPre.response.BaseResponse;
+import kr.co.FreeAndPre.response.BaseResponseStatus;
 import org.apache.tomcat.jni.User;
 import org.springframework.web.bind.annotation.*;
+
+import static kr.co.FreeAndPre.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/freepre/user")
@@ -25,7 +28,6 @@ public class UserController {
     @GetMapping("/{userEmail}")
     public BaseResponse<Boolean> getUserExist(@PathVariable("userEmail") String userEmail) {
         Boolean exist = userService.getUserExist(userEmail);
-        UserDto userDto = null;
 
         if (exist == true)
             return new BaseResponse<>(exist);
@@ -40,25 +42,19 @@ public class UserController {
     */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<String> insertPeriod(@RequestBody UserDto userDto) {
-
-        int userSuccess = 0;
-
+    public BaseResponse<UserDto> insertPeriod(@RequestBody UserDto userDto) {
         if (userDto.getEmail() == null || userDto.getNickname() == null || userDto.getFirst_period() == null)
-            return new BaseResponse<>("입력값을 확인해주세요.");
+            return new BaseResponse<>(REQUEST_ERROR);
 
         if (userDto.getFirst_period() == true) {
             //free 버전
-            userSuccess = userService.insertFreeUser(userDto);
+            userService.insertFreeUser(userDto);
         } else {
             //pre 버전
-            userSuccess = userService.insertPreUser(userDto);
+            userService.insertPreUser(userDto);
         }
 
-        if (userSuccess == 1)
-            return new BaseResponse<>("회원가입에 성공하였습니다.");
-        else
-            return new BaseResponse<>("회원가입에 실패하였습니다.");
+        return new BaseResponse<>(userDto);
     }
 
     /*
@@ -68,15 +64,12 @@ public class UserController {
     @PatchMapping("/nickname/{userEmail}")
     public BaseResponse<String> modifyUserNickname(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto) {
         if (userDto.getNickname() == null) {
-            return new BaseResponse<>("닉네임을 입력하세요.");
+            return new BaseResponse<>(NICKNAME_BLANCK);
         }
 
-        int userSuccess = userService.modifyUserNickname(userEmail, userDto);
+        userService.modifyUserNickname(userEmail, userDto);
 
-        if (userSuccess == 1)
-            return new BaseResponse<>("닉네임 수정에 성공하였습니다.");
-        else
-            return new BaseResponse<>("닉네임 수정에 실패하였습니다.");
+        return new BaseResponse<>("'" + userDto.getNickname() + "'" + "(으)로 닉네임 수정에 성공하였습니다.");
     }
 
     /*
@@ -86,22 +79,17 @@ public class UserController {
     @PatchMapping("/version/{userEmail}")
     public BaseResponse<String> modifyUserVersion(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto) {
         if (userDto.getFirst_period() == null) {
-            return new BaseResponse<>("초경여부를 입력하세요.");
+            return new BaseResponse<>(FIRST_PERIOD_BLANCK);
         }
-
-        int userSuccess = 0;
 
         //pre -> free
         if (userDto.getFirst_period() == true)
-            userSuccess = userService.pretofree(userEmail, userDto);
+            userService.pretofree(userEmail, userDto);
         //free -> pre
         else
-            userSuccess = userService.freetopre(userEmail, userDto);
+            userService.freetopre(userEmail, userDto);
 
-        if (userSuccess == 1)
-            return new BaseResponse<>("버전 변경에 성공하였습니다.");
-        else
-            return new BaseResponse<>("버전 변경에 실패하였습니다.");
+        return new BaseResponse<>("버전 변경에 성공하였습니다.");
     }
 
     /*
@@ -111,11 +99,12 @@ public class UserController {
     @DeleteMapping("/delete/{userEmail}")
     public BaseResponse<String> deleteUser(@PathVariable("userEmail") String userEmail) {
 
-        int userSuccess = userService.deleteUser(userEmail);
+        if(!userService.getUserExist(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
 
-        if (userSuccess == 1)
-            return new BaseResponse<>("회원 탈퇴에 성공하였습니다.");
-        else
-            return new BaseResponse<>("회원 탈퇴에 실패하였습니다.");
+        userService.deleteUser(userEmail);
+
+        return new BaseResponse<>("회원 탈퇴에 성공하였습니다.");
     }
 }
