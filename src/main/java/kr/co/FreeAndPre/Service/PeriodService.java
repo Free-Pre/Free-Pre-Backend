@@ -1,6 +1,7 @@
 package kr.co.FreeAndPre.Service;
 
 import kr.co.FreeAndPre.Dao.PeriodDao;
+import kr.co.FreeAndPre.Dao.UserDao;
 import kr.co.FreeAndPre.Dto.PeriodDto;
 import org.springframework.stereotype.Service;
 
@@ -9,22 +10,25 @@ import java.util.List;
 @Service
 public class PeriodService {
     public List<PeriodDto> getPeriodInfoByEmail (String userEmail) {
-        List<PeriodDto> periodDto = PeriodDao.getInstance().getPeriodInfoByEmail(userEmail);
-        return periodDto;
+        return PeriodDao.getInstance().getPeriodInfoByEmail(userEmail);
     }
 
-    public int insertFirstPeriod(PeriodDto periodDto) {
-        int result = PeriodDao.getInstance().insertFirstPeriod(periodDto);
-        return result;
+    public void insertFirstPeriod(PeriodDto periodDto) {
+        PeriodDao.getInstance().insertFirstPeriod(periodDto);
     }
 
-    public int insertPeriod(PeriodDto periodDto) {
-        int result = PeriodDao.getInstance().insertPeriod(periodDto);
-        return result;
+    public void insertPeriod(PeriodDto periodDto) {
+        PeriodDao.getInstance().insertPeriod(periodDto);
     }
 
-    public int modifyPeriod(int periodId, PeriodDto periodDto) {
-        int result = PeriodDao.getInstance().modifyPeriod(periodId, periodDto);
-        return result;
+    public void modifyPeriod(int periodId, PeriodDto periodDto) {
+        PeriodDao.getInstance().modifyPeriod(periodId, periodDto);
+    }
+
+    /*
+   Validation
+    */
+    public Boolean getUserExist(String userEmail) {
+        return UserDao.getInstance().getUserExist(userEmail);
     }
 }
