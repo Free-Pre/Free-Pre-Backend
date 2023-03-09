@@ -3,7 +3,7 @@ package kr.co.FreeAndPre.Dto;
 import java.util.Date;
 
 public class UserSymptomDto {
-    private Date date;
+    private String date;
     private String email;
     private Boolean vomit;
     private Boolean headache;
@@ -16,13 +16,9 @@ public class UserSymptomDto {
     private Boolean acne;
     private Boolean muscular_pain;
 
-    public Date getDate() {
-        return date;
-    }
+    public String getDate() { return date; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
     public Boolean getVomit() {
         return vomit;
@@ -64,7 +60,7 @@ public class UserSymptomDto {
         return muscular_pain;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -112,3 +108,5 @@ public class UserSymptomDto {
         this.muscular_pain = muscular_pain;
     }
 }
+
+

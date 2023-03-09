@@ -1,4 +1,70 @@
 package kr.co.FreeAndPre.Dao;
 
+import com.mysql.cj.protocol.Resultset;
+import kr.co.FreeAndPre.DBUtils;
+import kr.co.FreeAndPre.Dto.UserSymptomDto;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
+
+
 public class UserSymptomDao {
+    private static UserSymptomDao instance = new UserSymptomDao();
+    public UserSymptomDao() {}
+    public static UserSymptomDao getInstance(){
+        return instance;
+    }
+
+// 증상 가져오기
+    public UserSymptomDto getUserSymptom(String email, String date){
+        UserSymptomDto userSymptomDto = null;
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            // email과 date에 맞는 증상 가져오기
+            String getUserSymptomByEDQuery = "SELECT vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain From UserSymptom WHERE email =? and date=?;";
+            pstmt = con.prepareStatement(getUserSymptomByEDQuery);
+
+            pstmt.setString(1, email);
+            pstmt.setString(2, date);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+
+            userSymptomDto = new UserSymptomDto();
+//            userSymptomDto.setEmail(rs.getString("email"));
+//            userSymptomDto.setDate(rs.getString("date"));
+//            email, date 추가시 error 500 발생
+            userSymptomDto.setVomit(rs.getBoolean("vomit"));
+            userSymptomDto.setHeadache(rs.getBoolean("headache"));
+            userSymptomDto.setBackache(rs.getBoolean("backache"));
+            userSymptomDto.setConstipation(rs.getBoolean("constipation"));
+            userSymptomDto.setGiddiness(rs.getBoolean("giddiness"));
+            userSymptomDto.setTiredness(rs.getBoolean("tiredness"));
+            userSymptomDto.setFainting(rs.getBoolean("fainting"));
+            userSymptomDto.setSensitivity(rs.getBoolean("sensitivity"));
+            userSymptomDto.setAcne(rs.getBoolean("acne"));
+            userSymptomDto.setMuscular_pain(rs.getBoolean("muscular_pain"));
+
+
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+
+        return userSymptomDto;
+
+    }
+
+
 }
