@@ -25,10 +25,23 @@ public class PeriodService {
         PeriodDao.getInstance().modifyPeriod(periodId, periodDto);
     }
 
+    public PeriodDto getCalendarPeriod(String userEmail, int month) {
+        PeriodDto periodDto = PeriodDao.getInstance().getCalendarPeriod(userEmail, month);
+        return periodDto;
+    }
+
     /*
    Validation
     */
     public Boolean getUserExist(String userEmail) {
         return UserDao.getInstance().getUserExist(userEmail);
     }
+    public Boolean getPeriodExist(int periodId) {
+        return PeriodDao.getInstance().getPeriodExist(periodId);
+    }
+
+    public Boolean getPeriodCalendarExist(String userEmail, int month) {
+        return PeriodDao.getInstance().getPeriodCalendarExist(userEmail, month);
+    }
+
 }

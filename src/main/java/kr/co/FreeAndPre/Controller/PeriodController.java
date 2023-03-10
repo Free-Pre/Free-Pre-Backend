@@ -26,7 +26,7 @@ public class PeriodController {
      */
     @ResponseBody
     @GetMapping("/{userEmail}")
-    public BaseResponse<List<PeriodDto>> getPeriodInfoByEmail (@PathVariable("userEmail") String userEmail) {
+    public BaseResponse<List<PeriodDto>> getPeriodInfoByEmail(@PathVariable("userEmail") String userEmail) {
 
         if(!periodService.getUserExist(userEmail)){
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
@@ -81,14 +81,45 @@ public class PeriodController {
 
 
      /*
-    3. 월경 정보 수정하기
+     3. 월경 정보 수정하기
      */
      @ResponseBody
      @PatchMapping("/edit/{periodId}")
      public BaseResponse<String> modifyPeriod(@PathVariable("periodId") int periodId, @RequestBody PeriodDto periodDto) {
 
+         if (periodDto.getEmail() == null || periodDto.getStart_date() == null || periodDto.getEnd_date() == null)
+             return new BaseResponse<>(REQUEST_ERROR);
+
+         if(!periodService.getUserExist(periodDto.getEmail())){
+             return new BaseResponse<>(BaseResponseStatus.NO_USER);
+         }
+
+         if(!periodService.getPeriodExist(periodDto.getPeriod_id())){
+             return new BaseResponse<>(BaseResponseStatus.NO_PERIOD);
+         }
+
          periodService.modifyPeriod(periodId, periodDto);
 
-         return new BaseResponse<>("월경 정보 입력에 성공하였습니다.");
+         return new BaseResponse<>("월경 정보 수정에 성공하였습니다.");
      }
+
+     /*
+     4. 캘린더 해당 월의 월경 정보 가져오기
+     */
+    @ResponseBody
+    @GetMapping("/calendar/{userEmail}/{month}")
+    public BaseResponse<PeriodDto> getCalendarPeriod(@PathVariable("userEmail") String userEmail, @PathVariable("month") int month) {
+
+        if(!periodService.getUserExist(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
+        if(!periodService.getPeriodCalendarExist(userEmail, month)){
+            return new BaseResponse<>(BaseResponseStatus.NO_MONTH_PERIOD);
+        }
+
+        PeriodDto periodDto = periodService.getCalendarPeriod(userEmail, month);
+
+        return new BaseResponse<>(periodDto);
+    }
 }

@@ -26,7 +26,8 @@ public enum BaseResponseStatus {
     /**
      * 4000: 회원 관련
      */
-    NO_PERIOD(false, 4000, "월경 정보가 존재하지 않습니다.");
+    NO_PERIOD(false, 4000, "월경 정보가 존재하지 않습니다."),
+    NO_MONTH_PERIOD(false, 4001, "해당 월에 월경 정보가 존재하지 않습니다.");
 
     private final boolean isSuccess;
     private final int code;

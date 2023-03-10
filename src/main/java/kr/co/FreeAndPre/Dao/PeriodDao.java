@@ -3,6 +3,7 @@ package kr.co.FreeAndPre.Dao;
 
 import kr.co.FreeAndPre.DBUtils;
 import kr.co.FreeAndPre.Dto.PeriodDto;
+import kr.co.FreeAndPre.Dto.UserDto;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -188,21 +189,161 @@ public class PeriodDao {
     public void modifyPeriod(int periodId, PeriodDto periodDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
-        ResultSet rs = null;
 
         try {
             con = DBUtils.getConnection();
 
+            /* period 테이블에 월경 정보 업데이트하기 */
             String modifyPeriodQuery = "UPDATE Period SET start_date = ?, end_date = ? WHERE period_id = ?;";
             pstmt = con.prepareStatement(modifyPeriodQuery);
 
             pstmt.setString(1, periodDto.getStart_date());
             pstmt.setString(2, periodDto.getEnd_date());
             pstmt.setInt(3, periodId);
-
-            //+ user 테이블의 기간, 주기 업데이트
-
             pstmt.executeUpdate();
+
+            /* User 테이블의 주기(last_cycle), 기간(term) 업데이트 */
+            //최근 4개월 월경 시작일 가져오기
+            pstmt = con.prepareStatement("SELECT start_date FROM period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
+            pstmt.setString(1, periodDto.getEmail());
+            ResultSet rs = pstmt.executeQuery();
+            List<String> start_date = new ArrayList<>();
+            while(rs.next()) {
+                start_date.add(rs.getString(1));
+            }
+
+            //최근 4개월 월경 마지막일 가져오기
+            pstmt = con.prepareStatement("SELECT end_date FROM period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
+            pstmt.setString(1, periodDto.getEmail());
+            rs = pstmt.executeQuery();
+            List<String> end_date = new ArrayList<>();
+            while(rs.next()) {
+                end_date.add(rs.getString(1));
+            }
+
+            //user 테이블의 cycle 업데이트 쿼리문
+            String updateLastCycleQuery = "UPDATE User SET cycle = ?  WHERE email = ?;";
+            pstmt = con.prepareStatement(updateLastCycleQuery);
+
+            List<Long> cycle_gap = new ArrayList<>();  //각 달의 월경 주기
+            for(int i = 0; i < start_date.size() - 1; i++) {  //(새로 입력한 월경 시작일 - 저번 달의 월경 시작일)
+
+                Long gap = (new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime() -
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i + 1)).getTime()) / 1000 / (24*60*60);
+                if(gap >= 50)
+                    cycle_gap.add(i, Long.valueOf(28));
+                else
+                    cycle_gap.add(i, gap);
+            }
+
+            long cycle = 0, cycle_sum = 0;
+            for(int i = 0; i < cycle_gap.size(); i++) {
+                cycle_sum += cycle_gap.get(i);
+                cycle = cycle_sum / cycle_gap.size();
+            }
+
+            pstmt.setInt(1, Long.valueOf(cycle ).intValue() );
+            pstmt.setString(2, periodDto.getEmail());
+            pstmt.executeUpdate();
+
+            //user 테이블의 term 업데이트 쿼리문
+            String updateTermQuery = "UPDATE User SET term = ? WHERE email = ?;";
+            pstmt = con.prepareStatement(updateTermQuery);
+
+            List<Long> term_gap = new ArrayList<>();  //각 달의 월경 기간
+            for(int i = 0; i < start_date.size(); i++) {  //(새로 입력한 월경 마지막일 - 새로 입력한 월경 시작일)
+                term_gap.add(i, (new SimpleDateFormat("yyyy-MM-dd").parse(end_date.get(i)).getTime() -
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime()) / 1000 / (24*60*60));
+            }
+            long term = 0, term_sum = 0;
+            for(int i = 0; i < term_gap.size(); i++) {
+                term_sum += term_gap.get(i);
+                term =  term_sum / term_gap.size();
+            }
+
+            pstmt.setInt(1, Long.valueOf(term).intValue());
+            pstmt.setString(2, periodDto.getEmail());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+     /*
+    4. 캘린더 해당 월의 월경 정보 가져오기
+     */
+     public PeriodDto getCalendarPeriod(String userEmail, int month) {
+         PreparedStatement pstmt = null;
+         Connection con = null;
+         ResultSet rs = null;
+         PeriodDto periodDto = new PeriodDto();
+
+         try {
+             con = DBUtils.getConnection();
+
+             //최근 4개월의 월경 정보 가져오기
+             String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE email = ? AND MONTH(start_date) = ?";
+             pstmt = con.prepareStatement(getPeriodByEmailQuery);
+             pstmt.setString(1, userEmail);
+             pstmt.setInt(2, month);
+             rs = pstmt.executeQuery();
+
+             while(rs.next()) {
+                 periodDto.setPeriod_id(rs.getInt("period_id"));
+                 periodDto.setEmail(rs.getString("email"));
+                 periodDto.setStart_date(rs.getString("start_date"));
+                 periodDto.setEnd_date(rs.getString("end_date"));
+             }
+
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+         return periodDto;
+     }
+
+    /*
+    validation
+     */
+    public Boolean getPeriodExist(int periodId) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String getPeriodExistQuery = "select EXISTS (select * from Period where period_id = ? limit 1) as success;";
+            pstmt = con.prepareStatement(getPeriodExistQuery);
+            pstmt.setInt(1, periodId);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+
+            return (rs.getObject(1, Boolean.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Boolean getPeriodCalendarExist(String userEmail, int month) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String getPeriodExistQuery = "select EXISTS (select * from Period WHERE email = ? AND MONTH(start_date) = ? limit 1) as success;";
+            pstmt = con.prepareStatement(getPeriodExistQuery);
+            pstmt.setString(1, userEmail);
+            pstmt.setInt(2, month);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+
+            return (rs.getObject(1, Boolean.class));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

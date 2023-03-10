@@ -28,7 +28,6 @@ public class UserDao {
         try {
             con = DBUtils.getConnection();
             String getUserByIdQuery = "select EXISTS (select * from User where email = ? limit 1) as success;";
-            String getUserExistParams = userEmail;
             pstmt = con.prepareStatement(getUserByIdQuery);
             pstmt.setString(1, userEmail);
             rs = pstmt.executeQuery();
