@@ -44,6 +44,14 @@ public class UserSymptomController {
     }
 
 //    3. 증상 수정
+    @ResponseBody
+    @PatchMapping("edit/{email}/{date}")
+    public BaseResponse<String> editUserSymptom(@PathVariable("email") String email, @PathVariable ("date") String date, @RequestBody UserSymptomDto userSymptomDto){
+
+        userSymptomService.editUserSymptom(email, date, userSymptomDto);
+
+        return new BaseResponse<>("증상 정보 수정에 성공하였습니다.");
+    }
 
 
 

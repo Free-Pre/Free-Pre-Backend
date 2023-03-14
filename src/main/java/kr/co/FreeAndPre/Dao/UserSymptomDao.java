@@ -70,6 +70,8 @@ public class UserSymptomDao {
 
     }
 
+//    증상 등록
+
     public int insertUserSymptom(UserSymptomDto userSymptomDto){
         PreparedStatement pstmt = null;
         Connection con = null;
@@ -77,8 +79,7 @@ public class UserSymptomDao {
         try {
             con = DBUtils.getConnection();
 
-            String insertUserSymptomQuery = "insert into UserSymptom(email, date, vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain) Values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-//            쿼리 써야 함.
+            String insertUserSymptomQuery = "INSERT INTO UserSymptom(email, date, vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain) Values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );";
             pstmt = con.prepareStatement(insertUserSymptomQuery);
 
             pstmt.setString(1, userSymptomDto.getEmail());
@@ -99,6 +100,39 @@ public class UserSymptomDao {
             return res;
 
         } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+//    증상 수정
+
+    public void editUserSymptom(String email, String date, UserSymptomDto userSymptomDto){
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String editUserSymptomQuery = "UPDATE UserSymptom SET vomit = ?, headache = ?, backache = ?, constipation = ?, giddiness = ?, tiredness = ?, fainting = ?, sensitivity = ?, acne = ?, muscular_pain = ? WHERE email = ? and date = ?;";
+            pstmt = con.prepareStatement(editUserSymptomQuery);
+
+
+            pstmt.setBoolean(1,userSymptomDto.getVomit());
+            pstmt.setBoolean(2, userSymptomDto.getHeadache());
+            pstmt.setBoolean(3, userSymptomDto.getBackache());
+            pstmt.setBoolean(4, userSymptomDto.getConstipation());
+            pstmt.setBoolean(5, userSymptomDto.getGiddiness());
+            pstmt.setBoolean(6,userSymptomDto.getTiredness());
+            pstmt.setBoolean(7, userSymptomDto.getFainting());
+            pstmt.setBoolean(8, userSymptomDto.getSensitivity());
+            pstmt.setBoolean(9, userSymptomDto.getAcne());
+            pstmt.setBoolean(10, userSymptomDto.getMuscular_pain());
+            pstmt.setString(11, email);
+            pstmt.setString(12, date);
+
+            pstmt.executeUpdate();
+
+        }catch (SQLException e){
             throw new RuntimeException(e);
         }
     }

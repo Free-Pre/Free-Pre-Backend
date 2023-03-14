@@ -23,4 +23,8 @@ public class UserSymptomService {
         return result;
     }
 
+    public void editUserSymptom(String email, String date, UserSymptomDto userSymptomDto){
+        UserSymptomDao.getInstance().editUserSymptom(email, date, userSymptomDto);
+    }
+
 }
