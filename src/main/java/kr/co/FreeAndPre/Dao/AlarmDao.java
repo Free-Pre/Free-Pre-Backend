@@ -48,6 +48,55 @@ public class AlarmDao {
     }
 
 
+    //     2. 알람 저장하기
+    public int saveAlarm(AlarmDto alarmDto){
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try {
+
+            con = DBUtils.getConnection();
+
+            String saveAlarmQuery = "INSERT INTO Alarm (email, start_time, end_time, alarm_gap) VALUES (?, ?, ?, ?);";
+            pstmt = con.prepareStatement(saveAlarmQuery);
+
+            pstmt.setString(1,alarmDto.getEmail());
+            pstmt.setTime(2,alarmDto.getStart_time());
+            pstmt.setTime(3,alarmDto.getEnd_time());
+            pstmt.setTime(4,alarmDto.getAlarm_gap());
+
+            return pstmt.executeUpdate();
+
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    //    3. 알람 수정하기
+    public void editAlarm(String email, AlarmDto alarmDto){
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try{
+            con = DBUtils.getConnection();
+
+            String editAlarmQuery = "UPDATE Alarm SET start_time = ?, end_time = ?, alarm_gap = ? WHERE email = ?;";
+            pstmt = con.prepareStatement(editAlarmQuery);
+
+            pstmt.setTime(1, alarmDto.getStart_time());
+            pstmt.setTime(2, alarmDto.getEnd_time());
+            pstmt.setTime(3, alarmDto.getAlarm_gap());
+            pstmt.setString(4, email);
+
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
 
 
 }

@@ -22,5 +22,23 @@ public class AlarmController {
         return new BaseResponse<>(alarmDto);
     }
 
+    //    2. 알람 등록
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<String> saveAlarm(@RequestBody AlarmDto alarmDto){
+        int alarmSuccess = alarmService.saveAlarm(alarmDto);
+        if (alarmSuccess == 1)
+            return new BaseResponse<>("알람 저장에 성공하였습니다.");
+        else
+            return new BaseResponse<>("알람 저장에 실패하였습니다.");
+    }
 
+//    3. 알람 수정
+    @ResponseBody
+    @PatchMapping("edit/{email}")
+    public BaseResponse<String> editAlarm(@PathVariable("email") String email, @RequestBody AlarmDto alarmDto){
+        alarmService.editAlarm(email, alarmDto);
+
+        return new BaseResponse<>("알람 수정에 성공하였습니다.");
+    }
 }
