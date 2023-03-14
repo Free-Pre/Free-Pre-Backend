@@ -39,23 +39,27 @@ public class UserSymptomDao {
             pstmt.setString(2, date);
             rs = pstmt.executeQuery();
 
-            rs.next();
 
-            userSymptomDto = new UserSymptomDto();
+            if(rs.next()){
+                userSymptomDto = new UserSymptomDto();
 //            userSymptomDto.setEmail(rs.getString("email"));
 //            userSymptomDto.setDate(rs.getString("date"));
 //            email, date 추가시 error 500 발생
-            userSymptomDto.setVomit(rs.getBoolean("vomit"));
-            userSymptomDto.setHeadache(rs.getBoolean("headache"));
-            userSymptomDto.setBackache(rs.getBoolean("backache"));
-            userSymptomDto.setConstipation(rs.getBoolean("constipation"));
-            userSymptomDto.setGiddiness(rs.getBoolean("giddiness"));
-            userSymptomDto.setTiredness(rs.getBoolean("tiredness"));
-            userSymptomDto.setFainting(rs.getBoolean("fainting"));
-            userSymptomDto.setSensitivity(rs.getBoolean("sensitivity"));
-            userSymptomDto.setAcne(rs.getBoolean("acne"));
-            userSymptomDto.setMuscular_pain(rs.getBoolean("muscular_pain"));
+                userSymptomDto.setVomit(rs.getBoolean("vomit"));
+                userSymptomDto.setHeadache(rs.getBoolean("headache"));
+                userSymptomDto.setBackache(rs.getBoolean("backache"));
+                userSymptomDto.setConstipation(rs.getBoolean("constipation"));
+                userSymptomDto.setGiddiness(rs.getBoolean("giddiness"));
+                userSymptomDto.setTiredness(rs.getBoolean("tiredness"));
+                userSymptomDto.setFainting(rs.getBoolean("fainting"));
+                userSymptomDto.setSensitivity(rs.getBoolean("sensitivity"));
+                userSymptomDto.setAcne(rs.getBoolean("acne"));
+                userSymptomDto.setMuscular_pain(rs.getBoolean("muscular_pain"));
 
+            }
+            else{
+                userSymptomDto = null;
+            }
 
 
         } catch (SQLException e){
@@ -64,6 +68,39 @@ public class UserSymptomDao {
 
         return userSymptomDto;
 
+    }
+
+    public int insertUserSymptom(UserSymptomDto userSymptomDto){
+        PreparedStatement pstmt = null;
+        Connection con = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String insertUserSymptomQuery = "insert into UserSymptom(email, date, vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain) Values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+//            쿼리 써야 함.
+            pstmt = con.prepareStatement(insertUserSymptomQuery);
+
+            pstmt.setString(1, userSymptomDto.getEmail());
+            pstmt.setString(2,  userSymptomDto.getDate());
+            pstmt.setBoolean(3, userSymptomDto.getVomit());
+            pstmt.setBoolean(4, userSymptomDto.getHeadache());
+            pstmt.setBoolean(5, userSymptomDto.getBackache());
+            pstmt.setBoolean(6, userSymptomDto.getConstipation());
+            pstmt.setBoolean(7, userSymptomDto.getGiddiness());
+            pstmt.setBoolean(8,userSymptomDto.getTiredness());
+            pstmt.setBoolean(9, userSymptomDto.getFainting());
+            pstmt.setBoolean(10, userSymptomDto.getSensitivity());
+            pstmt.setBoolean(11, userSymptomDto.getAcne());
+            pstmt.setBoolean(12, userSymptomDto.getMuscular_pain());
+
+
+            int res = pstmt.executeUpdate();
+            return res;
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
 

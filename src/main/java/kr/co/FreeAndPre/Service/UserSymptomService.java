@@ -17,4 +17,10 @@ public class UserSymptomService {
         return userSymptomDto;
     }
 
+    public int insertUserSymptom(UserSymptomDto userSymptomDto){
+        int result = UserSymptomDao.getInstance().insertUserSymptom(userSymptomDto);
+
+        return result;
+    }
+
 }

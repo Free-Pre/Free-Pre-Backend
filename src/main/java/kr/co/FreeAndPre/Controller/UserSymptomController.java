@@ -3,6 +3,7 @@ package kr.co.FreeAndPre.Controller;
 import kr.co.FreeAndPre.Dto.UserSymptomDto;
 import kr.co.FreeAndPre.Service.UserSymptomService;
 import kr.co.FreeAndPre.response.BaseResponse;
+import kr.co.FreeAndPre.response.BaseResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,8 +25,29 @@ public class UserSymptomController {
     public BaseResponse<UserSymptomDto> getUserSymptom (@PathVariable("email") String email, @PathVariable("date") String date){
         UserSymptomDto userSymptomDto = userSymptomService.getUserSymptom(email,date);
 
+        if(userSymptomDto == null){
+            // date 가 없을 때
+            return new BaseResponse<>(BaseResponseStatus.NO_USERSYMPTOM);
+        }
         return  new BaseResponse<>(userSymptomDto);
     }
+
+    //    2. 증상 입력(추가)
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<String> insertUserSymptom(@RequestBody UserSymptomDto userSymptomDto){
+        int userSymptomSuccess = userSymptomService.insertUserSymptom(userSymptomDto);
+        if(userSymptomSuccess == 1)
+            return new BaseResponse<>("몸 상태 입력에 성공하였습니다.");
+        else
+            return new BaseResponse<>("몸 상태 입력에 실패하였습니다.");
+    }
+
+//    3. 증상 수정
+
+
+
+
 
 
 
