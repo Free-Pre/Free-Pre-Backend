@@ -42,7 +42,7 @@ public class UserController {
     */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<UserDto> insertPeriod(@RequestBody UserDto userDto) {
+    public BaseResponse<String> insertUser(@RequestBody UserDto userDto) {
         if (userDto.getEmail() == null || userDto.getNickname() == null || userDto.getFirst_period() == null)
             return new BaseResponse<>(REQUEST_ERROR);
 
@@ -54,7 +54,7 @@ public class UserController {
             userService.insertPreUser(userDto);
         }
 
-        return new BaseResponse<>(userDto);
+        return new BaseResponse<>(userDto.getEmail() + "의 회원가입이 완료되었습니다.");
     }
 
     /*

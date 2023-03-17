@@ -4,8 +4,7 @@ public class UserDto {
     private String email;
     private String nickname;
     private Boolean first_period;
-    private int average_cycle;
-    private int last_cycle;
+    private int cycle;
     private int term;
     private Boolean notice;
     private Boolean pregnancy;
@@ -22,12 +21,8 @@ public class UserDto {
         return first_period;
     }
 
-    public int getAverage_cycle() {
-        return average_cycle;
-    }
-
-    public int getLast_cycle() {
-        return last_cycle;
+    public int getCycle() {
+        return cycle;
     }
 
     public int getTerm() {
@@ -54,12 +49,8 @@ public class UserDto {
         this.first_period = first_period;
     }
 
-    public void setAverage_cycle(int average_cycle) {
-        this.average_cycle = average_cycle;
-    }
-
-    public void setLast_cycle(int last_cycle) {
-        this.last_cycle = last_cycle;
+    public void setCycle(int cycle) {
+        this.cycle = cycle;
     }
 
     public void setTerm(int term) {
