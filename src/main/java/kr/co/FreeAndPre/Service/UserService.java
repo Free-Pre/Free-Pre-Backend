@@ -36,4 +36,8 @@ public class UserService {
         UserDao.getInstance().deleteUser(userEmail);
     }
 
+    public int getUserCycle(String userEmail) {
+        return UserDao.getInstance().getUserCycle(userEmail);
+    }
+
 }
