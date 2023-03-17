@@ -25,9 +25,8 @@ public class PeriodService {
         PeriodDao.getInstance().modifyPeriod(periodId, periodDto);
     }
 
-    public PeriodDto getCalendarPeriod(String userEmail, int month) {
-        PeriodDto periodDto = PeriodDao.getInstance().getCalendarPeriod(userEmail, month);
-        return periodDto;
+    public List<PeriodDto> getCalendarPeriod(String userEmail, int month) {
+        return PeriodDao.getInstance().getCalendarPeriod(userEmail, month);
     }
 
     /*

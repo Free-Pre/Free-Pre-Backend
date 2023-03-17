@@ -108,7 +108,7 @@ public class PeriodController {
      */
     @ResponseBody
     @GetMapping("/calendar/{userEmail}/{month}")
-    public BaseResponse<PeriodDto> getCalendarPeriod(@PathVariable("userEmail") String userEmail, @PathVariable("month") int month) {
+    public BaseResponse<List<PeriodDto>> getCalendarPeriod(@PathVariable("userEmail") String userEmail, @PathVariable("month") int month) {
 
         if(!periodService.getUserExist(userEmail)){
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
@@ -118,7 +118,7 @@ public class PeriodController {
             return new BaseResponse<>(BaseResponseStatus.NO_MONTH_PERIOD);
         }
 
-        PeriodDto periodDto = periodService.getCalendarPeriod(userEmail, month);
+        List<PeriodDto> periodDto = periodService.getCalendarPeriod(userEmail, month);
 
         return new BaseResponse<>(periodDto);
     }

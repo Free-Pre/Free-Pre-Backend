@@ -275,33 +275,36 @@ public class PeriodDao {
      /*
     4. 캘린더 해당 월의 월경 정보 가져오기
      */
-     public PeriodDto getCalendarPeriod(String userEmail, int month) {
+     public List<PeriodDto> getCalendarPeriod(String userEmail, int month) {
          PreparedStatement pstmt = null;
          Connection con = null;
          ResultSet rs = null;
-         PeriodDto periodDto = new PeriodDto();
+         List<PeriodDto> result = new ArrayList<>();
+         PeriodDto periodDto = null;
 
          try {
              con = DBUtils.getConnection();
 
-             //최근 4개월의 월경 정보 가져오기
-             String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE email = ? AND MONTH(start_date) = ?";
+             String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE email = ? AND MONTH(start_date) = ? OR MONTH(end_date) = ?";
              pstmt = con.prepareStatement(getPeriodByEmailQuery);
              pstmt.setString(1, userEmail);
              pstmt.setInt(2, month);
+             pstmt.setInt(3, month);
              rs = pstmt.executeQuery();
 
              while(rs.next()) {
+                 periodDto = new PeriodDto();
                  periodDto.setPeriod_id(rs.getInt("period_id"));
                  periodDto.setEmail(rs.getString("email"));
                  periodDto.setStart_date(rs.getString("start_date"));
                  periodDto.setEnd_date(rs.getString("end_date"));
+                 result.add(periodDto);
              }
 
          } catch (SQLException e) {
              throw new RuntimeException(e);
          }
-         return periodDto;
+         return result;
      }
 
     /*
