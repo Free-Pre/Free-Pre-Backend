@@ -26,4 +26,8 @@ public class AlarmService {
         AlarmDao.getInstance().editAlarm(email,alarmDto);
     }
 
+//    알람 존재
+    public Boolean getAlarmExist (String email) { return AlarmDao.getInstance().getAlarmExist(email); }
+
+
 }

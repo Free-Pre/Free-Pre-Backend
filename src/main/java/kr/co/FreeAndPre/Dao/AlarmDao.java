@@ -57,7 +57,9 @@ public class AlarmDao {
 
             con = DBUtils.getConnection();
 
-            String saveAlarmQuery = "INSERT INTO Alarm (email, start_time, end_time, alarm_gap) VALUES (?, ?, ?, ?);";
+            // 중복된 알람 저장 시 ignore 처리
+
+            String saveAlarmQuery = "INSERT IGNORE INTO Alarm (email, start_time, end_time, alarm_gap) VALUES (?, ?, ?, ?) ;";
             pstmt = con.prepareStatement(saveAlarmQuery);
 
             pstmt.setString(1,alarmDto.getEmail());
@@ -89,6 +91,26 @@ public class AlarmDao {
             pstmt.setString(4, email);
 
             pstmt.executeUpdate();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean getAlarmExist (String email) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String getAlarmExistQuery = "SELECT EXISTS (SELECT * From Alarm WHERE email = ? limit 1) as success; ";
+            pstmt = con.prepareStatement(getAlarmExistQuery);
+            pstmt.setString(1, email);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+
+            return (rs.getObject(1, Boolean.class));
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
