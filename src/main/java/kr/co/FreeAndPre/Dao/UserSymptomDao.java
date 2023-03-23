@@ -32,7 +32,7 @@ public class UserSymptomDao {
             con = DBUtils.getConnection();
 
             // email과 date에 맞는 증상 가져오기
-            String getUserSymptomByEDQuery = "SELECT vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain From UserSymptom WHERE email =? and date=?;";
+            String getUserSymptomByEDQuery = "SELECT * From UserSymptom WHERE email =? and date=?;";
             pstmt = con.prepareStatement(getUserSymptomByEDQuery);
 
             pstmt.setString(1, email);
@@ -42,9 +42,8 @@ public class UserSymptomDao {
 
             if(rs.next()){
                 userSymptomDto = new UserSymptomDto();
-//            userSymptomDto.setEmail(rs.getString("email"));
-//            userSymptomDto.setDate(rs.getString("date"));
-//            email, date 추가시 error 500 발생
+                userSymptomDto.setEmail(rs.getString("email"));
+                userSymptomDto.setDate(rs.getString("date"));
                 userSymptomDto.setVomit(rs.getBoolean("vomit"));
                 userSymptomDto.setHeadache(rs.getBoolean("headache"));
                 userSymptomDto.setBackache(rs.getBoolean("backache"));
@@ -57,10 +56,6 @@ public class UserSymptomDao {
                 userSymptomDto.setMuscular_pain(rs.getBoolean("muscular_pain"));
 
             }
-            else{
-                userSymptomDto = null;
-            }
-
 
         } catch (SQLException e){
             throw new RuntimeException(e);
@@ -79,7 +74,7 @@ public class UserSymptomDao {
         try {
             con = DBUtils.getConnection();
 
-            String insertUserSymptomQuery = "INSERT INTO UserSymptom(email, date, vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain) Values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );";
+            String insertUserSymptomQuery = "INSERT IGNORE INTO UserSymptom(email, date, vomit, headache, backache, constipation, giddiness, tiredness, fainting, sensitivity, acne, muscular_pain) Values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );";
             pstmt = con.prepareStatement(insertUserSymptomQuery);
 
             pstmt.setString(1, userSymptomDto.getEmail());
@@ -94,7 +89,6 @@ public class UserSymptomDao {
             pstmt.setBoolean(10, userSymptomDto.getSensitivity());
             pstmt.setBoolean(11, userSymptomDto.getAcne());
             pstmt.setBoolean(12, userSymptomDto.getMuscular_pain());
-
 
             int res = pstmt.executeUpdate();
             return res;
@@ -132,6 +126,27 @@ public class UserSymptomDao {
 
             pstmt.executeUpdate();
 
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean getUserSymptomExist (String email, String date){
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try{
+            con = DBUtils.getConnection();
+            String getUserSymptomExistQuery = "SELECT EXISTS (SELECT * FROM UserSymptom WHERE email = ? and date = ? limit 1) as success;";
+            pstmt = con.prepareStatement(getUserSymptomExistQuery);
+            pstmt.setString(1, email);
+            pstmt.setString(2, date);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+
+            return rs.getObject(1,Boolean.class);
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
