@@ -23,8 +23,14 @@ public class UserSymptomService {
         return result;
     }
 
+//    증상 수정
     public void editUserSymptom(String email, String date, UserSymptomDto userSymptomDto){
         UserSymptomDao.getInstance().editUserSymptom(email, date, userSymptomDto);
+    }
+
+//    증상 존재
+    public boolean getUserSymptomExist (String email, String date){
+        return UserSymptomDao.getInstance().getUserSymptomExist(email, date);
     }
 
 }

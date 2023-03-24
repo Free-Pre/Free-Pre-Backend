@@ -25,8 +25,8 @@ public class UserSymptomController {
     public BaseResponse<UserSymptomDto> getUserSymptom (@PathVariable("email") String email, @PathVariable("date") String date){
         UserSymptomDto userSymptomDto = userSymptomService.getUserSymptom(email,date);
 
-        if(userSymptomDto == null){
-            // date 가 없을 때
+        //        해당 날짜에 증상이 존재하지 않을 때
+        if(!userSymptomService.getUserSymptomExist(email, date)){
             return new BaseResponse<>(BaseResponseStatus.NO_USERSYMPTOM);
         }
         return  new BaseResponse<>(userSymptomDto);
@@ -37,6 +37,7 @@ public class UserSymptomController {
     @PostMapping("")
     public BaseResponse<String> insertUserSymptom(@RequestBody UserSymptomDto userSymptomDto){
         int userSymptomSuccess = userSymptomService.insertUserSymptom(userSymptomDto);
+
         if(userSymptomSuccess == 1)
             return new BaseResponse<>("몸 상태 입력에 성공하였습니다.");
         else
@@ -49,6 +50,11 @@ public class UserSymptomController {
     public BaseResponse<String> editUserSymptom(@PathVariable("email") String email, @PathVariable ("date") String date, @RequestBody UserSymptomDto userSymptomDto){
 
         userSymptomService.editUserSymptom(email, date, userSymptomDto);
+
+//        해당 날짜에 증상이 존재하지 않을 때
+        if(!userSymptomService.getUserSymptomExist(email, date)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USERSYMPTOM);
+        }
 
         return new BaseResponse<>("증상 정보 수정에 성공하였습니다.");
     }
