@@ -94,7 +94,7 @@ public class PeriodController {
              return new BaseResponse<>(BaseResponseStatus.NO_USER);
          }
 
-         if(!periodService.getPeriodExist(periodDto.getPeriod_id())){
+         if(!periodService.getPeriodExist(periodId)){
              return new BaseResponse<>(BaseResponseStatus.NO_PERIOD);
          }
 

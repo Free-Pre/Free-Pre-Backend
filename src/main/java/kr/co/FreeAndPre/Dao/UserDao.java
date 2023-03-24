@@ -181,14 +181,14 @@ public class UserDao {
     /*
    6. 사용자 주기 확인
     */
-    public int getUserCycle(String userEmail) {
+    public Boolean getUserCycle(String userEmail) {
         PreparedStatement pstmt = null;
         Connection con = null;
         ResultSet rs;
 
         try {
             con = DBUtils.getConnection();
-            String deleteUserQuery = "select ifnull(cycle, 0) cycle from User where email = ?;";
+            String deleteUserQuery = "select ifnull(cycle, false) cycle from User where email = ?;";
 
             pstmt = con.prepareStatement(deleteUserQuery);
             pstmt.setString(1, userEmail);
@@ -196,7 +196,7 @@ public class UserDao {
 
             rs.next();
 
-            return (rs.getObject(1, Integer.class));
+            return (rs.getObject(1, Boolean.class));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

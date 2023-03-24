@@ -114,18 +114,18 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/cycle/{userEmail}")
-    public BaseResponse<String> getUserCycle(@PathVariable("userEmail") String userEmail) {
+    public BaseResponse<Boolean> getUserCycle(@PathVariable("userEmail") String userEmail) {
 
         if(!userService.getUserExist(userEmail)){
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
         }
 
-        int result = userService.getUserCycle(userEmail);
+        Boolean result = userService.getUserCycle(userEmail);
 
-        if(result == 0)
-            return new BaseResponse<>("사용자의 cycle이 null입니다.");
+        if(result == true)
+            return new BaseResponse<>(result);  //null X
         else
-            return new BaseResponse<>("사용자의 cycle이 null이 아닙니다.");
+            return new BaseResponse<>(result);  //null O
 
     }
 }

@@ -204,7 +204,7 @@ public class PeriodDao {
 
             /* User 테이블의 주기(last_cycle), 기간(term) 업데이트 */
             //최근 4개월 월경 시작일 가져오기
-            pstmt = con.prepareStatement("SELECT start_date FROM period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
+            pstmt = con.prepareStatement("SELECT start_date FROM Period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
             pstmt.setString(1, periodDto.getEmail());
             ResultSet rs = pstmt.executeQuery();
             List<String> start_date = new ArrayList<>();
@@ -213,7 +213,7 @@ public class PeriodDao {
             }
 
             //최근 4개월 월경 마지막일 가져오기
-            pstmt = con.prepareStatement("SELECT end_date FROM period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
+            pstmt = con.prepareStatement("SELECT end_date FROM Period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
             pstmt.setString(1, periodDto.getEmail());
             rs = pstmt.executeQuery();
             List<String> end_date = new ArrayList<>();
@@ -285,11 +285,11 @@ public class PeriodDao {
          try {
              con = DBUtils.getConnection();
 
-             String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE email = ? AND MONTH(start_date) = ? OR MONTH(end_date) = ?";
+             String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE MONTH(start_date) = ? OR MONTH(end_date) = ? AND email = ?;\n";
              pstmt = con.prepareStatement(getPeriodByEmailQuery);
-             pstmt.setString(1, userEmail);
+             pstmt.setInt(1, month);
              pstmt.setInt(2, month);
-             pstmt.setInt(3, month);
+             pstmt.setString(3, userEmail);
              rs = pstmt.executeQuery();
 
              while(rs.next()) {
