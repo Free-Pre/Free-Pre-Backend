@@ -22,7 +22,6 @@ public class UserDao {
     1. 회원 존재 여부 확인하기
      */
     public Boolean getUserExist(String userEmail) {
-        UserDto userDto = null;
         PreparedStatement pstmt = null;
         Connection con = null;
         ResultSet rs = null;
@@ -217,7 +216,6 @@ public class UserDao {
         try {
             con = DBUtils.getConnection();
 
-            //최근 4개월의 월경 정보 가져오기
             String getUserInfoQuery = "SELECT * FROM User WHERE email = ?;";
             pstmt = con.prepareStatement(getUserInfoQuery);
             pstmt.setString(1, userEmail);

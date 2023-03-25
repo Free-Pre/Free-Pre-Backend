@@ -70,7 +70,7 @@ public class UserController {
     }
 
     /*
-    4. 버전 변경
+    4. 버전 변경 및 주기값 확인
      */
     @ResponseBody
     @PatchMapping("/version/{userEmail}")
@@ -126,24 +126,4 @@ public class UserController {
         return new BaseResponse<>(userDto);
 
     }
-
-//    /*
-//    6. 사용자 주기 확인
-//     */
-//    @ResponseBody
-//    @GetMapping("/cycle/{userEmail}")
-//    public BaseResponse<Boolean> getUserCycle(@PathVariable("userEmail") String userEmail) {
-//
-//        if(!userService.getUserExist(userEmail)){
-//            return new BaseResponse<>(BaseResponseStatus.NO_USER);
-//        }
-//
-//        Boolean result = userService.getUserCycle(userEmail);
-//
-//        if(result == true)
-//            return new BaseResponse<>(result);  //null X
-//        else
-//            return new BaseResponse<>(result);  //null O
-//
-//    }
 }
