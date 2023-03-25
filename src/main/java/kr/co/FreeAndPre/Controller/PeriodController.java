@@ -134,6 +134,10 @@ public class PeriodController {
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
         }
 
+        if(!periodService.getPeriodExistByEmail(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_PERIOD);
+        }
+
         int cycle = periodService.getHomeCycleInfo(userEmail);
         int term = periodService.getHomeTermInfo(userEmail);
         String start_date = periodService.getStartDateInfo(userEmail);

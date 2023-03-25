@@ -79,6 +79,10 @@ public class UserController {
             return new BaseResponse<>(FIRST_PERIOD_BLANCK);
         }
 
+        if(!userService.getUserExist(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
         //cycle 확인
         Boolean result = userService.getUserCycle(userEmail);
 

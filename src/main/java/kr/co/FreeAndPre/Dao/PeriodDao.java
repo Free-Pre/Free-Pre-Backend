@@ -403,6 +403,27 @@ public class PeriodDao {
         }
     }
 
+    public Boolean getPeriodExistByEmail(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+            String getPeriodExistQuery = "select EXISTS (select * from Period where period_id = ? limit 1) as success;";
+            pstmt = con.prepareStatement(getPeriodExistQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+
+            return (rs.getObject(1, Boolean.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Boolean getPeriodCalendarExist(String userEmail, int month) {
         PreparedStatement pstmt = null;
         Connection con = null;

@@ -52,6 +52,10 @@ public class PeriodService {
         return PeriodDao.getInstance().getPeriodExist(periodId);
     }
 
+    public Boolean getPeriodExistByEmail(String userEmail) {
+        return PeriodDao.getInstance().getPeriodExistByEmail(userEmail);
+    }
+
     public Boolean getPeriodCalendarExist(String userEmail, int month) {
         return PeriodDao.getInstance().getPeriodCalendarExist(userEmail, month);
     }
