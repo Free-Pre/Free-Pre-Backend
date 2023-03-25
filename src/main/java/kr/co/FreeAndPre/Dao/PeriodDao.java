@@ -58,10 +58,11 @@ public class PeriodDao {
     /*
     2. 회원가입 직후 첫 월경일 정보 입력
      */
-    public void insertFirstPeriod(PeriodDto periodDto) {
+    public PeriodDto insertFirstPeriod(PeriodDto periodDto) {
         PreparedStatement pstmt = null;
-        Statement stmt = null;
         Connection con = null;
+        PeriodDto periodDtoResult = null;
+        ResultSet rs;
 
         try {
             con = DBUtils.getConnection();
@@ -87,6 +88,24 @@ public class PeriodDao {
             pstmt.setString(3, periodDto.getEnd_date());
             pstmt.executeUpdate();
 
+            /*result 값 가져오기*/
+            String getPeriodIDQuery = "select period_id from Period where email = ? AND start_date = ? AND end_date = ?;";
+            pstmt = con.prepareStatement(getPeriodIDQuery);
+            pstmt.setString(1, periodDto.getEmail());
+            pstmt.setString(2, periodDto.getStart_date());
+            pstmt.setString(3, periodDto.getEnd_date());
+            rs = pstmt.executeQuery();
+
+            periodDtoResult = new PeriodDto();
+            while (rs.next()) {
+                periodDtoResult.setPeriod_id(rs.getInt("period_id"));
+            }
+            periodDtoResult.setEmail(periodDto.getEmail());
+            periodDtoResult.setStart_date(periodDto.getStart_date());
+            periodDtoResult.setEnd_date(periodDto.getEnd_date());
+
+            return periodDtoResult;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {
@@ -97,9 +116,10 @@ public class PeriodDao {
     /*
     2-1. 월경 정보 입력하기
      */
-    public void insertPeriod(PeriodDto periodDto) {
+    public PeriodDto insertPeriod(PeriodDto periodDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
+        PeriodDto periodDtoResult = null;
 
         try {
             con = DBUtils.getConnection();
@@ -175,6 +195,24 @@ public class PeriodDao {
             pstmt.setInt(1, Long.valueOf(term).intValue());
             pstmt.setString(2, periodDto.getEmail());
             pstmt.executeUpdate();
+
+            /*result 값 가져오기*/
+            String getPeriodIDQuery = "select period_id from Period where email = ? AND start_date = ? AND end_date = ?;";
+            pstmt = con.prepareStatement(getPeriodIDQuery);
+            pstmt.setString(1, periodDto.getEmail());
+            pstmt.setString(2, periodDto.getStart_date());
+            pstmt.setString(3, periodDto.getEnd_date());
+            rs = pstmt.executeQuery();
+
+            periodDtoResult = new PeriodDto();
+            while (rs.next()) {
+                periodDtoResult.setPeriod_id(rs.getInt("period_id"));
+            }
+            periodDtoResult.setEmail(periodDto.getEmail());
+            periodDtoResult.setStart_date(periodDto.getStart_date());
+            periodDtoResult.setEnd_date(periodDto.getEnd_date());
+
+            return periodDtoResult;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
