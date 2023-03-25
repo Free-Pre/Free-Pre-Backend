@@ -2,9 +2,9 @@ package kr.co.FreeAndPre.Controller;
 
 import kr.co.FreeAndPre.Dto.PeriodDto;
 import kr.co.FreeAndPre.Service.PeriodService;
-import kr.co.FreeAndPre.Service.UserService;
 import kr.co.FreeAndPre.response.BaseResponse;
 import kr.co.FreeAndPre.response.BaseResponseStatus;
+import kr.co.FreeAndPre.Dto.HomePeriodDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class PeriodController {
     }
 
     /*
-    1. 월경 정보 가져오기
+    1. 월경 정보 4개 가져오기
      */
     @ResponseBody
     @GetMapping("/{userEmail}")
@@ -121,5 +121,25 @@ public class PeriodController {
         List<PeriodDto> periodDto = periodService.getCalendarPeriod(userEmail, month);
 
         return new BaseResponse<>(periodDto);
+    }
+
+    /*
+   5. 홈화면의 월경 정보 가져오기
+    */
+    @ResponseBody
+    @GetMapping("/home/{userEmail}")
+    public BaseResponse<HomePeriodDto> getHomePeriodInfo(@PathVariable("userEmail") String userEmail) {
+
+        if(!periodService.getUserExist(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
+        int cycle = periodService.getHomeCycleInfo(userEmail);
+        int term = periodService.getHomeTermInfo(userEmail);
+        String start_date = periodService.getStartDateInfo(userEmail);
+
+        HomePeriodDto response = new HomePeriodDto(cycle, term, start_date);
+
+        return new BaseResponse<>(response);
     }
 }

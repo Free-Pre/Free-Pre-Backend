@@ -29,6 +29,19 @@ public class PeriodService {
         return PeriodDao.getInstance().getCalendarPeriod(userEmail, month);
     }
 
+    public int getHomeCycleInfo(String userEmail) {
+        return PeriodDao.getInstance().getHomeCycleInfo(userEmail);
+    }
+
+    public int getHomeTermInfo(String userEmail) {
+        return PeriodDao.getInstance().getHomeTermInfo(userEmail);
+    }
+
+    public String getStartDateInfo(String userEmail) {
+        return PeriodDao.getInstance().getStartDateInfo(userEmail);
+    }
+
+
     /*
    Validation
     */
