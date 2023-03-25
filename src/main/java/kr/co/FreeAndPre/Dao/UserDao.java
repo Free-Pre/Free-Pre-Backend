@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDao {
     private static UserDao instance = new UserDao();
@@ -201,5 +203,40 @@ public class UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /*
+    7. 사용자 정보 가져오기
+     */
+    public UserDto getUserInfo(String userEmail) {
+        UserDto userDto = null;
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            //최근 4개월의 월경 정보 가져오기
+            String getUserInfoQuery = "SELECT * FROM User WHERE email = ?;";
+            pstmt = con.prepareStatement(getUserInfoQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+                userDto = new UserDto();
+                userDto.setEmail(rs.getString("email"));
+                userDto.setNickname(rs.getString("nickname"));
+                userDto.setFirst_period(rs.getBoolean("first_period"));
+                userDto.setCycle(rs.getInt("cycle"));
+                userDto.setTerm(rs.getInt("term"));
+                userDto.setNotice(rs.getBoolean("notice"));
+                userDto.setPregnancy(rs.getBoolean("pregnancy"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return userDto;
     }
 }

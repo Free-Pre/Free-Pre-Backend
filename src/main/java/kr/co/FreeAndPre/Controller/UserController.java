@@ -1,13 +1,10 @@
 package kr.co.FreeAndPre.Controller;
 
-import kr.co.FreeAndPre.Dto.PeriodDto;
 import kr.co.FreeAndPre.Dto.UserDto;
-import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.Service.UserService;
-import kr.co.FreeAndPre.response.BaseException;
 import kr.co.FreeAndPre.response.BaseResponse;
 import kr.co.FreeAndPre.response.BaseResponseStatus;
-import org.apache.tomcat.jni.User;
+import kr.co.FreeAndPre.Dto.VersionChangeDto;
 import org.springframework.web.bind.annotation.*;
 
 import static kr.co.FreeAndPre.response.BaseResponseStatus.*;
@@ -77,10 +74,13 @@ public class UserController {
      */
     @ResponseBody
     @PatchMapping("/version/{userEmail}")
-    public BaseResponse<String> modifyUserVersion(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto) {
+    public BaseResponse<VersionChangeDto> modifyUserVersion(@PathVariable("userEmail") String userEmail, @RequestBody UserDto userDto) {
         if (userDto.getFirst_period() == null) {
             return new BaseResponse<>(FIRST_PERIOD_BLANCK);
         }
+
+        //cycle 확인
+        Boolean result = userService.getUserCycle(userEmail);
 
         //pre -> free
         if (userDto.getFirst_period() == true)
@@ -89,7 +89,9 @@ public class UserController {
         else
             userService.freetopre(userEmail, userDto);
 
-        return new BaseResponse<>("버전 변경에 성공하였습니다.");
+        VersionChangeDto resonse = new VersionChangeDto("버전 변경에 성공하였습니다.", result);
+
+        return new BaseResponse<>(resonse);
     }
 
     /*
@@ -108,24 +110,40 @@ public class UserController {
         return new BaseResponse<>("회원 탈퇴에 성공하였습니다.");
     }
 
-
     /*
-    6. 사용자 주기 확인
+    6. 회원 정보 가져오기
      */
     @ResponseBody
-    @GetMapping("/cycle/{userEmail}")
-    public BaseResponse<Boolean> getUserCycle(@PathVariable("userEmail") String userEmail) {
+    @GetMapping("/info/{userEmail}")
+    public BaseResponse<UserDto> getUserInfo(@PathVariable("userEmail") String userEmail) {
 
         if(!userService.getUserExist(userEmail)){
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
         }
 
-        Boolean result = userService.getUserCycle(userEmail);
+        UserDto userDto =  userService.getUserInfo(userEmail);;
 
-        if(result == true)
-            return new BaseResponse<>(result);  //null X
-        else
-            return new BaseResponse<>(result);  //null O
+        return new BaseResponse<>(userDto);
 
     }
+
+//    /*
+//    6. 사용자 주기 확인
+//     */
+//    @ResponseBody
+//    @GetMapping("/cycle/{userEmail}")
+//    public BaseResponse<Boolean> getUserCycle(@PathVariable("userEmail") String userEmail) {
+//
+//        if(!userService.getUserExist(userEmail)){
+//            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+//        }
+//
+//        Boolean result = userService.getUserCycle(userEmail);
+//
+//        if(result == true)
+//            return new BaseResponse<>(result);  //null X
+//        else
+//            return new BaseResponse<>(result);  //null O
+//
+//    }
 }

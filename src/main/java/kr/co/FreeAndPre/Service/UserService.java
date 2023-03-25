@@ -3,6 +3,7 @@ package kr.co.FreeAndPre.Service;
 import kr.co.FreeAndPre.Dao.UserDao;
 import kr.co.FreeAndPre.Dto.UserDto;
 import kr.co.FreeAndPre.response.BaseException;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 
@@ -38,6 +39,10 @@ public class UserService {
 
     public Boolean getUserCycle(String userEmail) {
         return UserDao.getInstance().getUserCycle(userEmail);
+    }
+
+    public UserDto getUserInfo(String userEmail) {
+        return UserDao.getInstance().getUserInfo(userEmail);
     }
 
 }
