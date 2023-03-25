@@ -13,12 +13,12 @@ public class PeriodService {
         return PeriodDao.getInstance().getPeriodInfoByEmail(userEmail);
     }
 
-    public void insertFirstPeriod(PeriodDto periodDto) {
-        PeriodDao.getInstance().insertFirstPeriod(periodDto);
+    public PeriodDto insertFirstPeriod(PeriodDto periodDto) {
+        return PeriodDao.getInstance().insertFirstPeriod(periodDto);
     }
 
-    public void insertPeriod(PeriodDto periodDto) {
-        PeriodDao.getInstance().insertPeriod(periodDto);
+    public PeriodDto insertPeriod(PeriodDto periodDto) {
+        return PeriodDao.getInstance().insertPeriod(periodDto);
     }
 
     public void modifyPeriod(int periodId, PeriodDto periodDto) {

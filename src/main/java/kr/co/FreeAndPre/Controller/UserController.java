@@ -64,6 +64,10 @@ public class UserController {
             return new BaseResponse<>(NICKNAME_BLANCK);
         }
 
+        if(!userService.getUserExist(userEmail)){
+            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
         userService.modifyUserNickname(userEmail, userDto);
 
         return new BaseResponse<>("'" + userDto.getNickname() + "'" + "(으)로 닉네임 수정에 성공하였습니다.");

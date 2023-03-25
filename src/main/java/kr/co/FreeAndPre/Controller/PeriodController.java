@@ -1,5 +1,6 @@
 package kr.co.FreeAndPre.Controller;
 
+import kr.co.FreeAndPre.Dao.PeriodDao;
 import kr.co.FreeAndPre.Dto.PeriodDto;
 import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.response.BaseResponse;
@@ -55,9 +56,9 @@ public class PeriodController {
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
         }
 
-        periodService.insertFirstPeriod(periodDto);
+        PeriodDto periodDtoResult = periodService.insertFirstPeriod(periodDto);
 
-        return new BaseResponse<>(periodDto);
+        return new BaseResponse<>(periodDtoResult);
     }
 
     /*
@@ -74,9 +75,9 @@ public class PeriodController {
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
         }
 
-        periodService.insertPeriod(periodDto);
+        PeriodDto periodDtoResult = periodService.insertPeriod(periodDto);
 
-        return new BaseResponse<>(periodDto);
+        return new BaseResponse<>(periodDtoResult);
     }
 
 
@@ -112,6 +113,10 @@ public class PeriodController {
 
         if(!periodService.getUserExist(userEmail)){
             return new BaseResponse<>(BaseResponseStatus.NO_USER);
+        }
+
+        if(month <= 0 || month > 12){
+            return new BaseResponse<>(BaseResponseStatus.NOT_VALIDATE_MONTH);
         }
 
         if(!periodService.getPeriodCalendarExist(userEmail, month)){

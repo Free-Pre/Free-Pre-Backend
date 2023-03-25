@@ -24,12 +24,13 @@ public enum BaseResponseStatus {
     NO_USER(false, 3002, "존재하지 않는 회원에 대한 요청입니다."),
 
     /**
-     * 4000: 회원 관련
+     * 4000: 월경 관련
      */
     NO_PERIOD(false, 4000, "월경 정보가 존재하지 않습니다."),
     NO_MONTH_PERIOD(false, 4001, "해당 월에 월경 정보가 존재하지 않습니다."),
     NO_USERSYMPTOM(false, 4002, "증상 정보가 존재하지 않습니다."),
-    NO_ALARM(false, 4003, "알람 정보가 존재하지 않습니다.");
+    NO_ALARM(false, 4003, "알람 정보가 존재하지 않습니다."),
+    NOT_VALIDATE_MONTH(false, 4004, "월이 올바르지 않습니다.");
 
 
     private final boolean isSuccess;

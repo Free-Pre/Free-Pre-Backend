@@ -58,10 +58,11 @@ public class PeriodDao {
     /*
     2. 회원가입 직후 첫 월경일 정보 입력
      */
-    public void insertFirstPeriod(PeriodDto periodDto) {
+    public PeriodDto insertFirstPeriod(PeriodDto periodDto) {
         PreparedStatement pstmt = null;
-        Statement stmt = null;
         Connection con = null;
+        PeriodDto periodDtoResult = null;
+        ResultSet rs;
 
         try {
             con = DBUtils.getConnection();
@@ -87,6 +88,24 @@ public class PeriodDao {
             pstmt.setString(3, periodDto.getEnd_date());
             pstmt.executeUpdate();
 
+            /*result 값 가져오기*/
+            String getPeriodIDQuery = "select period_id from Period where email = ? AND start_date = ? AND end_date = ?;";
+            pstmt = con.prepareStatement(getPeriodIDQuery);
+            pstmt.setString(1, periodDto.getEmail());
+            pstmt.setString(2, periodDto.getStart_date());
+            pstmt.setString(3, periodDto.getEnd_date());
+            rs = pstmt.executeQuery();
+
+            periodDtoResult = new PeriodDto();
+            while (rs.next()) {
+                periodDtoResult.setPeriod_id(rs.getInt("period_id"));
+            }
+            periodDtoResult.setEmail(periodDto.getEmail());
+            periodDtoResult.setStart_date(periodDto.getStart_date());
+            periodDtoResult.setEnd_date(periodDto.getEnd_date());
+
+            return periodDtoResult;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {
@@ -97,9 +116,10 @@ public class PeriodDao {
     /*
     2-1. 월경 정보 입력하기
      */
-    public void insertPeriod(PeriodDto periodDto) {
+    public PeriodDto insertPeriod(PeriodDto periodDto) {
         PreparedStatement pstmt = null;
         Connection con = null;
+        PeriodDto periodDtoResult = null;
 
         try {
             con = DBUtils.getConnection();
@@ -115,7 +135,7 @@ public class PeriodDao {
 
             /* User 테이블의 주기(last_cycle), 기간(term) 업데이트 */
             //최근 4개월 월경 시작일 가져오기
-            pstmt = con.prepareStatement("SELECT start_date FROM period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
+            pstmt = con.prepareStatement("SELECT start_date FROM Period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
             pstmt.setString(1, periodDto.getEmail());
             ResultSet rs = pstmt.executeQuery();
             List<String> start_date = new ArrayList<>();
@@ -124,7 +144,7 @@ public class PeriodDao {
             }
 
             //최근 4개월 월경 마지막일 가져오기
-            pstmt = con.prepareStatement("SELECT end_date FROM period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
+            pstmt = con.prepareStatement("SELECT end_date FROM Period WHERE email = ? ORDER BY end_date DESC LIMIT 4;");
             pstmt.setString(1, periodDto.getEmail());
             rs = pstmt.executeQuery();
             List<String> end_date = new ArrayList<>();
@@ -175,6 +195,24 @@ public class PeriodDao {
             pstmt.setInt(1, Long.valueOf(term).intValue());
             pstmt.setString(2, periodDto.getEmail());
             pstmt.executeUpdate();
+
+            /*result 값 가져오기*/
+            String getPeriodIDQuery = "select period_id from Period where email = ? AND start_date = ? AND end_date = ?;";
+            pstmt = con.prepareStatement(getPeriodIDQuery);
+            pstmt.setString(1, periodDto.getEmail());
+            pstmt.setString(2, periodDto.getStart_date());
+            pstmt.setString(3, periodDto.getEnd_date());
+            rs = pstmt.executeQuery();
+
+            periodDtoResult = new PeriodDto();
+            while (rs.next()) {
+                periodDtoResult.setPeriod_id(rs.getInt("period_id"));
+            }
+            periodDtoResult.setEmail(periodDto.getEmail());
+            periodDtoResult.setStart_date(periodDto.getStart_date());
+            periodDtoResult.setEnd_date(periodDto.getEnd_date());
+
+            return periodDtoResult;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -285,9 +323,9 @@ public class PeriodDao {
          try {
              con = DBUtils.getConnection();
 
-             String getPeriodByEmailQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE MONTH(start_date) = ? OR MONTH(end_date) = ? AND email = ?;\n";
-             pstmt = con.prepareStatement(getPeriodByEmailQuery);
-             pstmt.setInt(1, month);
+             String getCalendarPeriodQuery = "SELECT period_id, email, start_date, end_date FROM Period WHERE email = ? AND (MONTH(start_date) = ? OR MONTH(end_date) = ?);";
+             pstmt = con.prepareStatement(getCalendarPeriodQuery);
+             pstmt.setString(1, userEmail);
              pstmt.setInt(2, month);
              pstmt.setString(3, userEmail);
              rs = pstmt.executeQuery();
@@ -410,7 +448,7 @@ public class PeriodDao {
 
         try {
             con = DBUtils.getConnection();
-            String getPeriodExistQuery = "select EXISTS (select * from Period where period_id = ? limit 1) as success;";
+            String getPeriodExistQuery = "select EXISTS (select * from Period where email = ? limit 1) as success;";
             pstmt = con.prepareStatement(getPeriodExistQuery);
             pstmt.setString(1, userEmail);
             rs = pstmt.executeQuery();
