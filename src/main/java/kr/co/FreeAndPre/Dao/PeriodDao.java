@@ -308,6 +308,78 @@ public class PeriodDao {
      }
 
     /*
+   5-1. 홈화면의 cycle 정보 가져오
+    */
+    public int getHomeCycleInfo(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String getHomeCycleQuery = "SELECT cycle FROM User WHERE email = ?;";
+            pstmt = con.prepareStatement(getHomeCycleQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            return (rs.getObject(1, Integer.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+   5-2. 홈화면의 term 정보 가져오기
+    */
+    public int getHomeTermInfo(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String getHomeTermQuery = "SELECT term FROM User WHERE email = ?;";
+            pstmt = con.prepareStatement(getHomeTermQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            return (rs.getObject(1, Integer.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+   5-3. 홈화면의 start_date 정보 가져오기
+    */
+    public String getStartDateInfo(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String getStartDateQuery = "SELECT start_date FROM Period WHERE email = ? ORDER BY start_date DESC LIMIT 1;";
+            pstmt = con.prepareStatement(getStartDateQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            return (rs.getObject(1, String.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
     validation
      */
     public Boolean getPeriodExist(int periodId) {
