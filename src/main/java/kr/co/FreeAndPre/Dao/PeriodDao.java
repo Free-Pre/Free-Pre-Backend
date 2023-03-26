@@ -327,7 +327,7 @@ public class PeriodDao {
              pstmt = con.prepareStatement(getCalendarPeriodQuery);
              pstmt.setString(1, userEmail);
              pstmt.setInt(2, month);
-             pstmt.setString(3, userEmail);
+             pstmt.setInt(3, month);
              rs = pstmt.executeQuery();
 
              while(rs.next()) {
@@ -469,10 +469,11 @@ public class PeriodDao {
 
         try {
             con = DBUtils.getConnection();
-            String getPeriodExistQuery = "select EXISTS (select * from Period WHERE email = ? AND MONTH(start_date) = ? limit 1) as success;";
+            String getPeriodExistQuery = "select EXISTS (select * from Period WHERE email = ? AND (MONTH(start_date) = ? OR MONTH(end_date) = ?) limit 1) as success;";
             pstmt = con.prepareStatement(getPeriodExistQuery);
             pstmt.setString(1, userEmail);
             pstmt.setInt(2, month);
+            pstmt.setInt(3, month);
             rs = pstmt.executeQuery();
 
             rs.next();
