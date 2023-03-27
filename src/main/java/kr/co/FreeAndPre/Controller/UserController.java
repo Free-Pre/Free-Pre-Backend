@@ -132,6 +132,5 @@ public class UserController {
         UserDto userDto =  userService.getUserInfo(userEmail);;
 
         return new BaseResponse<>(userDto);
-
     }
 }

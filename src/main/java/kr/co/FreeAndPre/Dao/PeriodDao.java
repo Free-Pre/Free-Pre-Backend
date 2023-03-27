@@ -73,7 +73,7 @@ public class PeriodDao {
 
             Date start_date = new SimpleDateFormat("yyyy.MM.dd").parse(periodDto.getStart_date());
             Date end_date = new SimpleDateFormat("yyyy.MM.dd").parse(periodDto.getEnd_date());
-            long term = ((end_date.getTime() - start_date.getTime()) / 1000) / (24*60*60);
+            long term = ((end_date.getTime() - start_date.getTime()) / 1000) / (24*60*60) + 1;
 
             pstmt.setString(1, Long.toString(term));
             pstmt.setString(2, periodDto.getEmail());
@@ -160,7 +160,7 @@ public class PeriodDao {
             for(int i = 0; i < start_date.size() - 1; i++) {  //(새로 입력한 월경 시작일 - 저번 달의 월경 시작일)
 
                 Long gap = (new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime() -
-                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i + 1)).getTime()) / 1000 / (24*60*60);
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i + 1)).getTime()) / 1000 / (24*60*60) + 1;
                 if(gap >= 50)
                     cycle_gap.add(i, Long.valueOf(28));
                 else
@@ -184,7 +184,7 @@ public class PeriodDao {
             List<Long> term_gap = new ArrayList<>();  //각 달의 월경 기간
             for(int i = 0; i < start_date.size(); i++) {  //(새로 입력한 월경 마지막일 - 새로 입력한 월경 시작일)
                 term_gap.add(i, (new SimpleDateFormat("yyyy-MM-dd").parse(end_date.get(i)).getTime() -
-                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime()) / 1000 / (24*60*60));
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime()) / 1000 / (24*60*60) + 1);
             }
             long term = 0, term_sum = 0;
             for(int i = 0; i < term_gap.size(); i++) {
@@ -291,7 +291,7 @@ public class PeriodDao {
             List<Long> term_gap = new ArrayList<>();  //각 달의 월경 기간
             for(int i = 0; i < start_date.size(); i++) {  //(새로 입력한 월경 마지막일 - 새로 입력한 월경 시작일)
                 term_gap.add(i, (new SimpleDateFormat("yyyy-MM-dd").parse(end_date.get(i)).getTime() -
-                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime()) / 1000 / (24*60*60));
+                        new SimpleDateFormat("yyyy-MM-dd").parse(start_date.get(i)).getTime()) / 1000 / (24*60*60) + 1);
             }
             long term = 0, term_sum = 0;
             for(int i = 0; i < term_gap.size(); i++) {
