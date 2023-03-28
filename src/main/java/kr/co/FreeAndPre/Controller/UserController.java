@@ -1,6 +1,8 @@
 package kr.co.FreeAndPre.Controller;
 
+import kr.co.FreeAndPre.Dto.HomePeriodDto;
 import kr.co.FreeAndPre.Dto.UserDto;
+import kr.co.FreeAndPre.Dto.UserInfoDto;
 import kr.co.FreeAndPre.Service.UserService;
 import kr.co.FreeAndPre.response.BaseResponse;
 import kr.co.FreeAndPre.response.BaseResponseStatus;
@@ -8,6 +10,7 @@ import kr.co.FreeAndPre.Dto.VersionChangeDto;
 import org.springframework.web.bind.annotation.*;
 
 import static kr.co.FreeAndPre.response.BaseResponseStatus.*;
+import static kr.co.FreeAndPre.response.BaseResponseStatus.REQUEST_ERROR;
 
 @RestController
 @RequestMapping("/freepre/user")
@@ -22,7 +25,7 @@ public class UserController {
    1. 회원 존재 여부 확인하기
     */
     @ResponseBody
-    @GetMapping("/{userEmail}")
+    @GetMapping("check/{userEmail}")
     public BaseResponse<Boolean> getUserExist(@PathVariable("userEmail") String userEmail) {
         Boolean exist = userService.getUserExist(userEmail);
 
@@ -123,14 +126,18 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/info/{userEmail}")
-    public BaseResponse<UserDto> getUserInfo(@PathVariable("userEmail") String userEmail) {
+    public BaseResponse<UserInfoDto> getHomePeriodInfo(@PathVariable("userEmail") String userEmail) {
 
         if(!userService.getUserExist(userEmail)){
-            return new BaseResponse<>(BaseResponseStatus.NO_USER);
+            return new BaseResponse<>(NO_USER);
         }
 
-        UserDto userDto =  userService.getUserInfo(userEmail);;
+        String nickname = userService.getNicknameInfo(userEmail);
+        Boolean notice = userService.getNoticeInfo(userEmail);
+        Boolean pregnancy = userService.getPregnancyInfo(userEmail);
 
-        return new BaseResponse<>(userDto);
+        UserInfoDto response = new UserInfoDto(nickname, notice, pregnancy);
+
+        return new BaseResponse<>(response);
     }
 }

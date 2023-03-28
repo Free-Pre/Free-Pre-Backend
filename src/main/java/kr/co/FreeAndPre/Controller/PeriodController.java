@@ -1,6 +1,5 @@
 package kr.co.FreeAndPre.Controller;
 
-import kr.co.FreeAndPre.Dao.PeriodDao;
 import kr.co.FreeAndPre.Dto.PeriodDto;
 import kr.co.FreeAndPre.Service.PeriodService;
 import kr.co.FreeAndPre.response.BaseResponse;

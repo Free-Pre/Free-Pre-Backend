@@ -1,5 +1,6 @@
 package kr.co.FreeAndPre.Service;
 
+import kr.co.FreeAndPre.Dao.PeriodDao;
 import kr.co.FreeAndPre.Dao.UserDao;
 import kr.co.FreeAndPre.Dto.UserDto;
 import kr.co.FreeAndPre.response.BaseException;
@@ -41,8 +42,15 @@ public class UserService {
         return UserDao.getInstance().getUserCycle(userEmail);
     }
 
-    public UserDto getUserInfo(String userEmail) {
-        return UserDao.getInstance().getUserInfo(userEmail);
+    public String getNicknameInfo(String userEmail) {
+        return UserDao.getInstance().getNicknameInfo(userEmail);
     }
 
+    public Boolean getNoticeInfo(String userEmail) {
+        return UserDao.getInstance().getNoticeInfo(userEmail);
+    }
+
+    public Boolean getPregnancyInfo(String userEmail) {
+        return UserDao.getInstance().getPregnancyInfo(userEmail);
+    }
 }

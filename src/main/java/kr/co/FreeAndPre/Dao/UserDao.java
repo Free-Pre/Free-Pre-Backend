@@ -205,10 +205,9 @@ public class UserDao {
     }
 
     /*
-    7. 사용자 정보 가져오기
+    7-1. 사용자 닉네임 가져오기
      */
-    public UserDto getUserInfo(String userEmail) {
-        UserDto userDto = null;
+    public String getNicknameInfo(String userEmail) {
         PreparedStatement pstmt = null;
         Connection con = null;
         ResultSet rs = null;
@@ -216,25 +215,64 @@ public class UserDao {
         try {
             con = DBUtils.getConnection();
 
-            String getUserInfoQuery = "SELECT * FROM User WHERE email = ?;";
-            pstmt = con.prepareStatement(getUserInfoQuery);
+            String getStartDateQuery = "SELECT nickname FROM User WHERE email = ?;";
+            pstmt = con.prepareStatement(getStartDateQuery);
             pstmt.setString(1, userEmail);
             rs = pstmt.executeQuery();
+            rs.next();
 
-            while(rs.next()) {
-                userDto = new UserDto();
-                userDto.setEmail(rs.getString("email"));
-                userDto.setNickname(rs.getString("nickname"));
-                userDto.setFirst_period(rs.getBoolean("first_period"));
-                userDto.setCycle(rs.getInt("cycle"));
-                userDto.setTerm(rs.getInt("term"));
-                userDto.setNotice(rs.getBoolean("notice"));
-                userDto.setPregnancy(rs.getBoolean("pregnancy"));
-            }
+            return (rs.getObject(1, String.class));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return userDto;
+    }
+
+    /*
+    7-2. 사용자 알람 여부 가져오기
+     */
+    public Boolean getNoticeInfo(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String getStartDateQuery = "SELECT notice FROM User WHERE email = ?;";
+            pstmt = con.prepareStatement(getStartDateQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            return (rs.getObject(1, Boolean.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+    7-3. 사용자 임신 여부 가져오기
+     */
+    public Boolean getPregnancyInfo(String userEmail) {
+        PreparedStatement pstmt = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBUtils.getConnection();
+
+            String getStartDateQuery = "SELECT pregnancy FROM User WHERE email = ?;";
+            pstmt = con.prepareStatement(getStartDateQuery);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            return (rs.getObject(1, Boolean.class));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
