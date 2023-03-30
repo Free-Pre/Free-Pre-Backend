@@ -26,6 +26,8 @@ dependencies {
 	annotationProcessor('org.projectlombok:lombok')
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
+	implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 }
 
 tasks.named('test') {
