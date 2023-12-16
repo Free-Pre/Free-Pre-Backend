@@ -12,7 +12,7 @@
 |CHAE EUN KIM|SEO HYEON YUK|
 |------|---|
 |[kche1106](https://github.com/kche1106)|[6shyun](https://github.com/6shyun)|
-|Period API, User API, DB |UserSymptom API, Alarm API, DB|
+|Period API, User API, DB |UserSymptom API, Alarm API, DB|
 <br>
 
 ## 📌 References
